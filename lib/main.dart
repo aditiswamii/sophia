@@ -2,11 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/login/login.dart';
+import 'package:sophia/utils/string.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    // systemNavigationBarColor: Colors.white, // navigation bar color
+    statusBarColor: ColorConstant.darkgreen, // status bar color
+    statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+    statusBarBrightness: Brightness.light,
+  ));
   runApp( MaterialApp(
       navigatorKey: navigatorKey,
       theme: ThemeData(fontFamily: "Montserrat"),
@@ -40,16 +48,9 @@ class _State extends State<MyApp> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment(0, -0.55),
-            end: Alignment(0.0, 1.0),
-            colors: [const  Color(0xFF2FBCB9), const Color(0xFF86DFD2)],
-            stops: [0.0, 1.0],
-          ),
-          image: DecorationImage(image: AssetImage(   "assets/images/backg.jpg",),
+          image: DecorationImage(image: AssetImage("assets/images/backg.jpg",),
               fit: BoxFit.cover,
-              // filterQuality: FilterQuality.low
-              // ,colorFilter: ColorFilter.mode(Color(0xFF2FBCB9), BlendMode.color,)
+
           ),
 
         ),
@@ -63,9 +64,9 @@ class _State extends State<MyApp> {
                 children: [
                   Image.asset("assets/images/schoollogo.png",height: 200,width: 200,),
                   SizedBox(height: 10,),
-                  Text("Sophia Senior\nSecondary School",style: TextStyle(color: ColorConstant.red,fontSize: 22,fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
+                  Text(Schoolname,style: TextStyle(color: ColorConstant.red,fontSize: 22,fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
                  SizedBox(height: 10,),
-                  Text("Bikaner Rajasthan",style: TextStyle(color: ColorConstant.red,fontSize: 14,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                  Text(Schoollocation,style: TextStyle(color: ColorConstant.red,fontSize: 14,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
 
                 ],
               ),

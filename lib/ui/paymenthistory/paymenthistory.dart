@@ -2,7 +2,8 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/feepayment/feepayment.dart';
-import 'package:sophia/ui/login/login.dart';
+
+import '../../utils/string.dart';
 
 class PaymentHistory extends StatefulWidget {
   const PaymentHistory({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class PaymentHistoryState extends State<PaymentHistory> {
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => FeePayment()));
+        MaterialPageRoute(builder: (BuildContext context) => const FeePayment()));
     // Do some stuff.
     return true;
   }
@@ -36,34 +37,37 @@ class PaymentHistoryState extends State<PaymentHistory> {
     return Scaffold(
         backgroundColor: ColorConstant.bggrey,
         body: Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: ListView(
               children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                    itemCount: 10,
                     itemBuilder: (context, index) {
                   return Container(
-                    margin:  EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    margin:  const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     width: MediaQuery.of(context).size.width - 40,
                     child: Card(
                       color: ColorConstant.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "Name",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
+                              children: const [
+                                SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    "Name",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 20,
@@ -74,44 +78,50 @@ class PaymentHistoryState extends State<PaymentHistory> {
                                   style: TextStyle(
                                       color: ColorConstant.bluetext,
                                       fontSize: 16),
-                                  textAlign: TextAlign.end,
+                                  textAlign: TextAlign.start,
                                 )),
                               ],
                             ),
-                            Divider(
+                            const Divider(
                               color: ColorConstant.grey,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Class",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
+                              children: const [
+                                SizedBox(width: 120,
+                                  child: Text(
+                                    "Class",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 20,
                                 ),
-                                Text(
-                                  "3A",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
+                                Expanded(
+                                  child: Text(
+                                    "3A",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),textAlign: TextAlign.start,
+                                  ),
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Due fees",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
+                              children: const [
+                                SizedBox(width: 120,
+                                  child: Text(
+                                    "Due fees",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 20,
@@ -122,83 +132,94 @@ class PaymentHistoryState extends State<PaymentHistory> {
                                   style: TextStyle(
                                       color: ColorConstant.bluetext,
                                       fontSize: 16),
-                                  textAlign: TextAlign.end,
+                                  textAlign: TextAlign.start,
                                 )),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Fee details",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
-                                ),
-                                Text(
-                                  "2021-22",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Payment Details",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
-                                ),
-                                Text(
-                                  "30 March 2022",
-                                  style: TextStyle(
-                                      color: ColorConstant.bluetext,
-                                      fontSize: 16),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: ColorConstant.darkgreen,
-                                      onPrimary: Colors.white,
-                                      elevation: 3,
-                                      alignment: Alignment.center,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0)),
-                                      fixedSize: const Size(214, 35),
-                                      //////// HERE
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  FeePayment()));
-                                    },
-                                    child: const Text(
-                                      "Download Receipt",
-                                      style: TextStyle(fontSize: 16),
-                                      textAlign: TextAlign.center,
-                                    ),
+                              children: const [
+                                SizedBox(width: 120,
+                                  child: Text(
+                                    "Fee details",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),
                                   ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "April-May",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    "Payment Date",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),
+                                  ),
+                                ),
+                                SizedBox(width: 20,),
+                                Expanded(
+                                  child: Text(
+                                    "30 March 2022",
+                                    style: TextStyle(
+                                        color: ColorConstant.bluetext,
+                                        fontSize: 16),textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: ColorConstant.darkgreen,
+                                    onPrimary: Colors.white,
+                                    elevation: 3,
+                                    alignment: Alignment.center,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0)),
+                                    fixedSize: const Size(214, 35),
+                                    //////// HERE
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const FeePayment()));
+                                  },
+                                  child:  const Text(
+                                    DownloadReceiptbtn,
+                                    style: TextStyle(fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

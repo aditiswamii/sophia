@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/feepayment/feepayment.dart';
 import 'package:sophia/ui/login/login.dart';
+import 'package:sophia/utils/string.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class HomeScreenState extends State<HomeScreen> {
                  height: 200,
                  width: MediaQuery.of(context).size.width-20,
                  alignment: Alignment.center,
-                 child: Text("Welcome, Parent",
+                 child: Text(Welcome+" "+"Parent",
                    style: TextStyle(color: Colors.white,fontSize: 32,fontStyle: FontStyle.normal,
                        fontFamily: "Montserrat"),textAlign: TextAlign.center,),
                ),
@@ -78,14 +79,14 @@ class HomeScreenState extends State<HomeScreen> {
                  child: Container(
 
                    margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                   alignment: Alignment.centerLeft,
+                   alignment: Alignment.topLeft,
                    child: SingleChildScrollView(
                      child: Column(
                        mainAxisAlignment: MainAxisAlignment.start,
                        children: [
                          Container(
                            alignment: Alignment.centerLeft,
-                           child: Text("Child details",style: TextStyle(color: ColorConstant.bluetext,fontSize: 22),
+                           child: Text(Childdetails,style: TextStyle(color: ColorConstant.bluetext,fontSize: 22),
                              textAlign: TextAlign.start,),
                          ),
                          Container(
@@ -95,81 +96,85 @@ class HomeScreenState extends State<HomeScreen> {
                                physics: BouncingScrollPhysics(),
                                itemCount: 10,
                                itemBuilder: (context, index) {
-                             return Card(
-                               shape: RoundedRectangleBorder(
-                                 borderRadius: BorderRadius.circular(20)
-                               ),
-                               child: Container(
-                                 width: MediaQuery.of(context).size.width-40,
-                               //  height: 200,
-                                 padding: EdgeInsets.all(20),
-                                 child: Column(
-                                   children: [
-                                     Row(
-                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             return Container(
+                               margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                               child: Card(
+                                 shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.circular(20)
+                                 ),
+                                 child: Container(
+                                   width: MediaQuery.of(context).size.width-40,
 
-                                       children: [
-                                         Container(
-                                           width: (MediaQuery.of(context).size.width-40)/2 -20,
-                                           child: Column(
-                                             mainAxisAlignment: MainAxisAlignment.start,
-                                             children: [
-                                               Container(
-                                                   width: (MediaQuery.of(context).size.width-40)/2 -20,
-                                                   child: Text("Gaurav soni",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
-                                               SizedBox(height: 10,),
-                                               Container(  width: (MediaQuery.of(context).size.width-40)/2 -20,
-                                                   child: Text("Class 3A",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
+                                 //  height: 200,
+                                   padding: EdgeInsets.all(20),
+                                   child: Column(
+                                     children: [
+                                       Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                                             ],
+                                         children: [
+                                           Container(
+                                             width: (MediaQuery.of(context).size.width-40)/2 -20,
+                                             child: Column(
+                                               mainAxisAlignment: MainAxisAlignment.start,
+                                               children: [
+                                                 Container(
+                                                     width: (MediaQuery.of(context).size.width-40)/2 -20,
+                                                     child: Text("Gaurav soni",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
+                                                 SizedBox(height: 10,),
+                                                 Container(  width: (MediaQuery.of(context).size.width-40)/2 -20,
+                                                     child: Text("Class 3A",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
+
+                                               ],
+                                             ),
                                            ),
-                                         ),
-                                         Container(
-                                             width: (MediaQuery.of(context).size.width-40)/2 -28,
-                                           alignment: Alignment.centerRight,
-                                           child: Column(
-                                             crossAxisAlignment: CrossAxisAlignment.end,
-                                             children: [
-                                               Container(
-                                                   width: (MediaQuery.of(context).size.width-40)/2 -28,
-                                                   child: Text("Fee Due",style: TextStyle(color: ColorConstant.bluetext,
-                                                       fontSize: 18),textAlign: TextAlign.end,)),
-                                               SizedBox(height: 10,),
-                                               Container(  width: (MediaQuery.of(context).size.width-40)/2 -28,
-                                                   child: Text("1000/-",style: TextStyle(color: ColorConstant.bluetext,
-                                                       fontSize: 18),textAlign: TextAlign.end,)),
+                                           Container(
+                                               width: (MediaQuery.of(context).size.width-40)/2 -28,
+                                             alignment: Alignment.centerRight,
+                                             child: Column(
+                                               crossAxisAlignment: CrossAxisAlignment.end,
+                                               children: [
+                                                 Container(
+                                                     width: (MediaQuery.of(context).size.width-40)/2 -28,
+                                                     child: Text("Fee Due",style: TextStyle(color: ColorConstant.bluetext,
+                                                         fontSize: 18),textAlign: TextAlign.end,)),
+                                                 SizedBox(height: 10,),
+                                                 Container(  width: (MediaQuery.of(context).size.width-40)/2 -28,
+                                                     child: Text("1000/-",style: TextStyle(color: ColorConstant.bluetext,
+                                                         fontSize: 18),textAlign: TextAlign.end,)),
 
-                                             ],
+                                               ],
+                                             ),
                                            ),
-                                         ),
-                                       ],
-                                     ),
-                                     SizedBox(height:30 ,),
-                                     Container(
-                                       child: ElevatedButton(
-                                         style: ElevatedButton.styleFrom(
-                                           primary: ColorConstant.darkgreen,
-                                           onPrimary: Colors.white,
-                                           elevation: 3,
-                                           alignment: Alignment.center,
-                                           shape: RoundedRectangleBorder(
-                                               borderRadius: BorderRadius.circular(30.0)),
-                                           fixedSize: const Size(178, 35),
-                                           //////// HERE
-                                         ),
-                                         onPressed: () {
-                                           Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                               builder: (BuildContext context) => FeePayment()));
-                                         },
-                                         child: const Text(
-                                           "View",
-                                           style:
-                                           TextStyle( fontSize: 16),
-                                           textAlign: TextAlign.center,
+                                         ],
+                                       ),
+                                       SizedBox(height:30 ,),
+                                       Container(
+                                         child: ElevatedButton(
+                                           style: ElevatedButton.styleFrom(
+                                             primary: ColorConstant.darkgreen,
+                                             onPrimary: Colors.white,
+                                             elevation: 3,
+                                             alignment: Alignment.center,
+                                             shape: RoundedRectangleBorder(
+                                                 borderRadius: BorderRadius.circular(30.0)),
+                                             fixedSize: const Size(178, 35),
+                                             //////// HERE
+                                           ),
+                                           onPressed: () {
+                                             Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                                 builder: (BuildContext context) => FeePayment()));
+                                           },
+                                           child: const Text(
+                                             View,
+                                             style:
+                                             TextStyle( fontSize: 16),
+                                             textAlign: TextAlign.center,
+                                           ),
                                          ),
                                        ),
-                                     ),
-                                   ],
+                                     ],
+                                   ),
                                  ),
                                ),
                              );

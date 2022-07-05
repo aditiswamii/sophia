@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "641387671178",
+    "project_id": "sophia-2043d",
+    "storage_bucket": "sophia-2043d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641387671178:android:0874fd3522bc3d11914773",
+        "android_client_info": {
+          "package_name": "com.neologicx.sophia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "641387671178-v7fead8bgurk4pna08u30iiu2ih1rl46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHwQUudISTyMZuv6xcbsvyeUej19cgPow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "641387671178-v7fead8bgurk4pna08u30iiu2ih1rl46.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

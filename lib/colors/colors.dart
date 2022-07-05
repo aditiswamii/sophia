@@ -16,5 +16,6 @@ class ColorConstant{
    static const radiobtn = Color(0xFFC9C9C9);
    static const greenone = Color(0xFF86DFD2);
    static const greentwo = Color(0xFF2FBCB9);
+   static const greytext = Color(0xFF9F9F9F);
 
  }

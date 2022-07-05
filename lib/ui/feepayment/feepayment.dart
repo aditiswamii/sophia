@@ -1,5 +1,3 @@
-
-
 import 'dart:developer';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
@@ -7,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
+import 'package:sophia/ui/notification/notification.dart';
+import 'package:sophia/utils/string.dart';
 
+import '../drawer/drawer.dart';
 import '../feedue/feedue.dart';
 import '../paymenthistory/paymenthistory.dart';
 
@@ -19,176 +20,168 @@ class FeePayment extends StatefulWidget {
 }
 
 class FeePaymentState extends State<FeePayment> {
-  int select=1;
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  int select = 1;
+  bool visible = true;
+
   @override
   void initState() {
-
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
+    // Create TabController for getting the index of current tab
   }
+
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
+
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) =>  HomeScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
     // Do some stuff.
     return true;
   }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor:ColorConstant.bggrey,
-        appBar: AppBar(
-          backgroundColor:ColorConstant.bggrey,
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: ColorConstant.bggrey,
+      drawer: LeftDrawer(),
+      drawerEnableOpenDragGesture: false,
+      appBar: AppBar(
+          backgroundColor: ColorConstant.bggrey,
           elevation: 0.0,
-
           toolbarHeight: 80,
           leading: Container(
-            padding: EdgeInsets.only(left:10.0),
+            padding: EdgeInsets.only(left: 10.0),
             alignment: Alignment.centerLeft,
             child: GestureDetector(
               onTap: () {
-                // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const Notifications()));
+                _scaffoldKey.currentState!.openDrawer();
               },
-              child: Image.asset('assets/images/sidemenu.png',width:32,
-                  color: ColorConstant.heading,height:32),
+              child: Image.asset('assets/images/sidemenu.png',
+                  width: 37, color: ColorConstant.heading, height: 30),
             ),
           ),
-          title: Text("Fees Payment",style: TextStyle(color: ColorConstant.heading),),
+          title: Text(
+            FeesPayment,
+            style: TextStyle(color: ColorConstant.heading, fontSize: 20),
+          ),
           actions: [
-            Container(
-              padding: EdgeInsets.only(right: 10.0),
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                  onTap: () {
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const Profile()));
-                  },
-                  child: Image.asset('assets/images/notification.png',color:ColorConstant.heading,width:32,height:32)
-              ),
-            )
-          ],
-
-
-
-          bottom:  TabBar(
-            isScrollable: false,
-            physics: NeverScrollableScrollPhysics(),
-            indicatorSize: TabBarIndicatorSize.tab,
-
-            // indicatorColor: Colors.transparent,
-            indicatorWeight: 2,
-            unselectedLabelColor: ColorConstant.bluetext,
-            labelColor: ColorConstant.white,
-            padding: EdgeInsets.all(8),
-              indicator: BoxDecoration(
-                color: ColorConstant.darkgreen,
-                borderRadius: BorderRadius.circular(40),
-              ),
-              splashBorderRadius: BorderRadius.circular(40),
-             onTap: (value){
-              log(value.toString());
-             },
-
-            tabs: [
-              Tab(
-                // iconMargin: EdgeInsets.only(left: 10,bottom: 10,right: 10),
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                        select=1;
-                    });
-                  },
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Notifications()));
+              },
+              child: Container(
+                margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                alignment: Alignment.topRight,
+                height: 23,
+                width: 25,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/notification.png'))),
+                child: Align(
+                  alignment: Alignment.topRight,
                   child: Container(
-                      height: 50,
-                      width: 170,
-                      padding: EdgeInsets.all(10),
-                    // decoration:
-                    // select==1? BoxDecoration(
-                    //     color: ColorConstant.darkgreen,
-                    //     borderRadius: BorderRadius.circular(30)):
-                    // BoxDecoration(
-                    //     border: Border.all(color: ColorConstant.darkgreen),
-                    //     borderRadius: BorderRadius.circular(30)),
-                      child: Center(child: Text("Fee dues"
-                         ,style:TextStyle(fontSize: 14)
-                      ))),
-                ),
-
-              ),
-
-              Tab(
-                // iconMargin: EdgeInsets.only(left: 10,bottom: 10,right: 10),
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      select=2;
-                    });
-                  },
-                  child: Container(
-                   // height: 50,
-                    //  width: 170,
-                     padding: EdgeInsets.all(10),
-                     // decoration:
-                     // select==2? BoxDecoration(
-                     //      color: ColorConstant.darkgreen,
-                     //      borderRadius: BorderRadius.circular(20)):
-                     // BoxDecoration(
-                     //     border: Border.all(color: ColorConstant.darkgreen),
-                     //     borderRadius: BorderRadius.circular(20)),
-                      child: Center(child: Text("Payment history",
-                          style:TextStyle(fontSize: 14)
-                      ))),
+                      height: 15,width: 15,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: ColorConstant.red,
+                            shape: BoxShape.circle
+                          ),
+                      child: Center(child: Text("99",style: TextStyle(color: ColorConstant.white,fontSize: 10),)),
+                      ),
                 ),
               ),
-
-            ],
-          ),
-        ),
-
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment(0, -0.55),
-              end: Alignment(0.0, 1.0),
-              colors: [const Color(0xFF2FBCB9), const Color(0xFF86DFD2)],
-              stops: [0.0, 1.0],
             ),
-            image: DecorationImage(
-                image: AssetImage(
-                  "assets/images/bg.png",
+          ]),
+      body: Stack(
+        children: [
+          Container(
+            height: 100,
+            padding: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: visible == true
+                        ? ColorConstant.darkgreen
+                        : ColorConstant.bggrey,
+                    onPrimary: Colors.white,
+                    elevation: 0,
+                    alignment: Alignment.center,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: BorderSide(
+                            color: ColorConstant.darkgreen, width: 2)),
+                    fixedSize: const Size(165, 50),
+                    //////// HERE
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      visible = true;
+                    });
+                  },
+                  child: Text(
+                    Feeduesbtn,
+                    style: TextStyle(
+                        color: visible == true
+                            ? ColorConstant.white
+                            : ColorConstant.bluetext,
+                        fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.low,
-                colorFilter: ColorFilter.mode(
-                  Color(0xFF2FBCB9),
-                  BlendMode.color,
-                )),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: visible == false
+                        ? ColorConstant.darkgreen
+                        : ColorConstant.bggrey,
+                    onPrimary: Colors.white,
+                    elevation: 0,
+                    alignment: Alignment.center,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: BorderSide(
+                            color: ColorConstant.darkgreen, width: 2)),
+                    fixedSize: const Size(165, 50),
+                    //////// HERE
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      visible = false;
+                    });
+                  },
+                  child: Text(
+                    Paymenthistorybtn,
+                    style: TextStyle(
+                        color: visible == false
+                            ? ColorConstant.white
+                            : ColorConstant.bluetext,
+                        fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: Container(
-
-
-             child: TabBarView(
-
-             children: [
-
-               FeeDue(),
-               PaymentHistory(),
-
-             ],
-           ),
-
-
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+            height: MediaQuery.of(context).size.height - 100,
+            width: MediaQuery.of(context).size.width,
+            child: Visibility(
+              visible: visible,
+              replacement: PaymentHistory(),
+              child: FeeDue(),
+            ),
           ),
-        ),
-          ),
+        ],
+      ),
     );
-
   }
 }

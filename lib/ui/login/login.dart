@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/home/home.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../utils/string.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -16,6 +19,22 @@ class LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = true;
   bool value = false;
   bool visibility = false;
+
+  Future<void> dialNumber(
+      {required String phoneNumber, required BuildContext context}) async {
+    final url = "tel:$phoneNumber";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      SnackBar(
+        content: Text("Unable to call $phoneNumber"),
+      );
+
+
+    }
+
+    return;
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -30,22 +49,13 @@ class LoginScreenState extends State<LoginScreen> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(0, -0.55),
-                end: Alignment(0.0, 1.0),
-                colors: [const Color(0xFF2FBCB9), const Color(0xFF86DFD2)],
-                stops: [0.0, 1.0],
-              ),
+
               image: DecorationImage(
                   image: AssetImage(
                     "assets/images/backg.jpg",
                   ),
                   fit: BoxFit.cover,
-                  // filterQuality: FilterQuality.low,
-                  // colorFilter: ColorFilter.mode(
-                  //   Color(0xFF2FBCB9),
-                  //   BlendMode.color,
-                  // )
+
               ),
             ),
             child: ListView(children: [
@@ -75,7 +85,7 @@ class LoginScreenState extends State<LoginScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             contentPadding: EdgeInsets.all(10),
-                            hintText: "Mobile No.",
+                            hintText: HintMobileNo,
                             hintStyle: TextStyle(color: ColorConstant.grey),
                             fillColor: Colors.white,
 
@@ -106,7 +116,7 @@ class LoginScreenState extends State<LoginScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             contentPadding: EdgeInsets.all(10),
-                            hintText: "Password",
+                            hintText: HintPassword,
                             hintStyle: TextStyle(color: ColorConstant.grey),
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
@@ -155,7 +165,7 @@ class LoginScreenState extends State<LoginScreen> {
                              builder: (BuildContext context) => HomeScreen()));
                        },
                        child: const Text(
-                         "Login",
+                         Loginbtn,
                          style:
                          TextStyle( fontSize: 16),
                          textAlign: TextAlign.center,
@@ -165,9 +175,23 @@ class LoginScreenState extends State<LoginScreen> {
                     Visibility(
                       visible: true,
                         child: Container(
+                          width: MediaQuery.of(context).size.width-10,
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child: Text("*Having issues while logging, Kindly contact 98765867453",
-                            style: TextStyle(fontSize: 10,fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("*Having issues while logging, Kindly contact",
+                                style: TextStyle(fontSize: 10,fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
+                              SizedBox(width:5,),
+                              GestureDetector(
+                                onTap: (){
+                                  dialNumber(phoneNumber:Number, context: context);
+                                },
+                                child: Text(Number,
+                                  style: TextStyle(fontSize: 10,fontWeight: FontWeight.w600),textAlign: TextAlign.center,),
+                              ),
+                            ],
+                          ),
                         ),
                       replacement: SizedBox.shrink(),
                     )

@@ -47,7 +47,7 @@ class LeftDrawerState extends State<LeftDrawer> {
 
      child: Container(
        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-       child: ListView(
+       child: Stack(
          children: [
            Container(
              color: ColorConstant.darkgreen,
@@ -70,107 +70,138 @@ class LeftDrawerState extends State<LeftDrawer> {
                ),
              ),
            ),
-           ListTile(
-             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-             leading: Image.asset(
-               "assets/images/sidemenu.png",
-               color: ColorConstant.heading,
-               height: 24,
-               width: 24,
-             ),
-             title: const Text(
-               'Fees',
-               style:
-               TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
-               textAlign: TextAlign.start,
-             ),
-             onTap: () {
-               // Navigator.pushReplacement(context,
-               //     MaterialPageRoute(builder: (context) => Teaching()));
+           Container(
+             margin: EdgeInsets.only(top: 202),
+             child: Column(
+               children: [
+                 ListTile(
+                   visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                   leading: Image.asset(
+                     "assets/images/sidemenu.png",
+                     color: ColorConstant.heading,
+                     height: 24,
+                     width: 24,
+                   ),
+                   title: const Text(
+                     'Fees',
+                     style:
+                     TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
+                     textAlign: TextAlign.start,
+                   ),
+                   onTap: () {
+                     // Navigator.pushReplacement(context,
+                     //     MaterialPageRoute(builder: (context) => Teaching()));
 
-               Navigator.pop(context);
-             },
-           ),
-           ListTile(
-             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-             leading: Image.asset(
-               "assets/images/sidemenu.png",
-               color: ColorConstant.heading,
-               height: 24,
-               width: 24,
-             ),
-             title: const Text(
-               'Change Password',
-               style:
-               TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
-               textAlign: TextAlign.start,
-             ),
-             onTap: () {
-               // Navigator.pushReplacement(context,
-               //     MaterialPageRoute(builder: (context) => Teaching()));
+                     Navigator.pop(context);
+                   },
+                 ),
 
-               Navigator.pop(context);
-             },
-           ),
-           ListTile(
-             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-             leading: Image.asset(
-               "assets/images/sidemenu.png",
-               color: ColorConstant.heading,
-               height: 24,
-               width: 24,
-             ),
-             title: const Text(
-               'Contact Us',
-               style:
-               TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
-               textAlign: TextAlign.start,
-             ),
-             onTap: () {
-              dialNumber(phoneNumber: Number, context: context);
-             },
-           ),
-           ListTile(
-             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-             leading: Image.asset(
-               "assets/images/sidemenu.png",
-               color: ColorConstant.heading,
-               height: 24,
-               width: 24,
-             ),
-             title: const Text(
-               'Privacy Policy',
-               style:
-               TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
-               textAlign: TextAlign.start,
-             ),
-             onTap: () {
-               // Navigator.pushReplacement(context,
-               //     MaterialPageRoute(builder: (context) => Teaching()));
+             ListTile(
+               visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+               leading: Image.asset(
+                 "assets/images/sidemenu.png",
+                 color: ColorConstant.heading,
+                 height: 24,
+                 width: 24,
+               ),
+               title: const Text(
+                 'Change Password',
+                 style:
+                 TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
+                 textAlign: TextAlign.start,
+               ),
+               onTap: () {
+                 // Navigator.pushReplacement(context,
+                 //     MaterialPageRoute(builder: (context) => Teaching()));
 
-               Navigator.pop(context);
-             },
-           ),
-           ListTile(
-             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-             leading: Image.asset(
-               "assets/images/logout1.png",
-               color: ColorConstant.heading,
-               height: 24,
-               width: 24,
+                 Navigator.pop(context);
+               },
              ),
-             title: const Text(
-               'Logout',
-               style:
-               TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
-               textAlign: TextAlign.start,
+             ListTile(
+               visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+               leading: Image.asset(
+                 "assets/images/sidemenu.png",
+                 color: ColorConstant.heading,
+                 height: 24,
+                 width: 24,
+               ),
+               title: const Text(
+                 'Contact Us',
+                 style:
+                 TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
+                 textAlign: TextAlign.start,
+               ),
+               onTap: () {
+                dialNumber(phoneNumber: Number, context: context);
+               },
              ),
-             onTap: () {
-               // Navigator.pushReplacement(context,
-               //     MaterialPageRoute(builder: (context) => Teaching()));
+             ListTile(
+               visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+               leading: Image.asset(
+                 "assets/images/sidemenu.png",
+                 color: ColorConstant.heading,
+                 height: 24,
+                 width: 24,
+               ),
+               title: const Text(
+                 'Privacy Policy',
+                 style:
+                 TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
+                 textAlign: TextAlign.start,
+               ),
+               onTap: () {
+                 // Navigator.pushReplacement(context,
+                 //     MaterialPageRoute(builder: (context) => Teaching()));
 
-               Navigator.pop(context);
-             },
+                 Navigator.pop(context);
+               },
+             ),
+             ListTile(
+               visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+               leading: Image.asset(
+                 "assets/images/logout1.png",
+                 color: ColorConstant.heading,
+                 height: 24,
+                 width: 24,
+               ),
+               title: const Text(
+                 'Logout',
+                 style:
+                 TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
+                 textAlign: TextAlign.start,
+               ),
+               onTap: () {
+                 // Navigator.pushReplacement(context,
+                 //     MaterialPageRoute(builder: (context) => Teaching()));
+
+                 Navigator.pop(context);
+               },
+             ),
+               ],
+             ),
+           ),
+           Center(
+             child: Container(
+               alignment: Alignment.bottomCenter,
+               child: ListTile(
+                 visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                 leading: Text("Version 1.0.0",style:
+                     TextStyle(fontSize: 12, color:ColorConstant.heading,fontFamily: 'Montserrat'),
+                 textAlign: TextAlign.start,),
+                 title: const Text(
+                   'Designed and Developed by Neologicx',
+                   style:
+                   TextStyle(fontSize: 12, color:ColorConstant.heading,fontFamily: 'Montserrat'),
+                   textAlign: TextAlign.start,
+                 ),
+                 onTap: () {
+                   // Navigator.pushReplacement(context,
+                   //     MaterialPageRoute(builder: (context) => Teaching()));
+
+                   Navigator.pop(context);
+                 },
+               ),
+             ),
            ),
          ],
        ),
@@ -179,3 +210,4 @@ class LeftDrawerState extends State<LeftDrawer> {
 
   }
 }
+//Designed and Developed by Neologicx

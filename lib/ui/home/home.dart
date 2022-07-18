@@ -3,9 +3,13 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:sophia/colors/colors.dart';
+import 'package:sophia/model/student.dart';
 import 'package:sophia/ui/feepayment/feepayment.dart';
 import 'package:sophia/ui/login/login.dart';
 import 'package:sophia/utils/string.dart';
+
+import 'homecontract.dart';
+import 'homepresenter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,24 +18,41 @@ class HomeScreen extends StatefulWidget {
   HomeScreenState createState() => HomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> implements HomeContract {
+
+  late HomePresenter _presenter;
+
+  late List<Student> _contacts;
+
+  late bool _isLoading;
+
+  HomeScreenState() {
+    _presenter = HomePresenter(this);
+  }
+
+
+
   @override
   void initState() {
-
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
+    _isLoading = true;
+    _presenter.loadContacts();
   }
+
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
+
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) =>  LoginScreen()));
     // Do some stuff.
     return true;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +115,7 @@ class HomeScreenState extends State<HomeScreen> {
                            child: ListView.builder(
                              shrinkWrap: true,
                                physics: BouncingScrollPhysics(),
-                               itemCount: 10,
+                               itemCount: _contacts.length,
                                itemBuilder: (context, index) {
                              return Container(
                                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -120,7 +141,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                children: [
                                                  Container(
                                                      width: (MediaQuery.of(context).size.width-40)/2 -20,
-                                                     child: Text("Gaurav soni",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
+                                                     child: Text(_contacts[index].fullName,style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
                                                  SizedBox(height: 10,),
                                                  Container(  width: (MediaQuery.of(context).size.width-40)/2 -20,
                                                      child: Text("Class 3A",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
@@ -191,5 +212,18 @@ class HomeScreenState extends State<HomeScreen> {
          ),
        ),
     );
+  }
+
+  @override
+  void showError() {
+
+  }
+
+  @override
+  void showStudentList(List<Student> items) {
+    setState(() {
+      _contacts = items;
+      _isLoading = false;
+    });
   }
 }

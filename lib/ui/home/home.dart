@@ -22,7 +22,7 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
 
   late HomePresenter _presenter;
 
-  late List<Student> _contacts;
+  late List<Student> _contacts = <Student>[];
 
   late bool _isLoading;
 
@@ -141,10 +141,10 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
                                                children: [
                                                  Container(
                                                      width: (MediaQuery.of(context).size.width-40)/2 -20,
-                                                     child: Text(_contacts[index].fullName,style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
+                                                     child: Text(_contacts[index].name,style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
                                                  SizedBox(height: 10,),
                                                  Container(  width: (MediaQuery.of(context).size.width-40)/2 -20,
-                                                     child: Text("Class 3A",style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
+                                                     child: Text(_contacts[index].standard,style: TextStyle(color: ColorConstant.bluetext,fontSize: 18))),
 
                                                ],
                                              ),
@@ -161,7 +161,7 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
                                                          fontSize: 18),textAlign: TextAlign.end,)),
                                                  SizedBox(height: 10,),
                                                  Container(  width: (MediaQuery.of(context).size.width-40)/2 -28,
-                                                     child: Text("1000/-",style: TextStyle(color: ColorConstant.bluetext,
+                                                     child: Text(_contacts[index].feesdue.toString(),style: TextStyle(color: ColorConstant.bluetext,
                                                          fontSize: 18),textAlign: TextAlign.end,)),
 
                                                ],

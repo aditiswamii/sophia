@@ -1,29 +1,24 @@
 class Student {
 
-  final String fullName;
+  final int child_id;
 
-  final String gender;
+  final String name;
 
-  final String email;
+  final String standard;
 
-  final String imageUrl;
-
-  final String birthday;
-
-  // final Location location;
-  //
-  // final List<Phone> phones;
+  final int feesdue;
 
 
-  const Student({required this.fullName, required this.gender, required this.email, required this.imageUrl,
-    required this.birthday});
+
+
+  const Student({required this.child_id, required this.name, required this.standard, required this.feesdue});
 
   Student.fromMap(Map<String, dynamic>  map) :
-        fullName = "${map['name']['first']} ${map['name']['last']}",
-        gender = map['gender'],
-        email = map['email'],
-        imageUrl = map['picture']['large'],
-        birthday = "Birthday ${map['dob']}";
+
+        child_id = map['child_id'],
+        name = map['name'],
+        standard = map['standard'],
+        feesdue = map['feesdue'];
         // location = new Location.fromMap(map['location']),
         // phones = <Phone>[
         //   new Phone(type: 'Home',   number: map['phone']),

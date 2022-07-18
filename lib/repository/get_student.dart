@@ -8,15 +8,17 @@ import 'package:http/http.dart' as http;
 
 class GetStudentRepository implements StudentRepository {
 
-  static const url = 'http://api.randomuser.me/?results=15';
-
+  //static const url = 'http://api.randomuser.me/?results=15';
+  static const url = 'https://sophia.mobilogicx.com/api/child_list';
   final JsonDecoder _decoder = JsonDecoder();
 
   @override
   Future<List<Student>> fetchStudent() {
-    return http
-        .get(Uri.parse(url))
-        .then((http.Response response) {
+   String parent_id = "4041";
+   // var bodyv = json.encode(data);
+    return http.post(Uri.parse(url),
+        body: {
+        'parent_id': parent_id}).then((http.Response response) {
       final String jsonBody = response.body;
       final statusCode = response.statusCode;
 
@@ -25,7 +27,7 @@ class GetStudentRepository implements StudentRepository {
       }
 
       final contactsContainer = _decoder.convert(jsonBody);
-      final List contactItems = contactsContainer['results'];
+      final List contactItems = contactsContainer['data']['student'];
 
       return contactItems.map((contactRaw) => Student.fromMap(contactRaw))
           .toList();

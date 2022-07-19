@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'package:sophia/model/feesdetail.dart';
 import 'package:sophia/model/student.dart';
@@ -50,9 +51,9 @@ class GetStudentRepository implements StudentRepository {
       }
 
       final contactsContainer = _decoder.convert(jsonBody);
-      final FeesDetail contactItems = contactsContainer['data'];
-
-      return contactItems;
+      final LinkedHashMap<String,dynamic> contactItems = contactsContainer['data'];
+      return FeesDetail.fromMap(contactItems);
+    //  return contactItems.map((contactRaw) => Student.fromMap(contactRaw));
     });
   }
 }

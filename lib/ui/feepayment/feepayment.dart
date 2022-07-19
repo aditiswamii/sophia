@@ -225,32 +225,32 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                 const Divider(color: ColorConstant.grey,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: const [
+                                  children:  [
                                     SizedBox(width: 100,
                                         child: Text("Class",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
                                     SizedBox(width: 20,),
-                                    Expanded(child: Text("3A",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
+                                    Expanded(child: Text(_contacts.standard,style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
                                   ],
                                 ),
                                 const SizedBox(height: 20,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: const [
+                                  children:  [
                                     SizedBox(width: 100,
                                         child: Text("Due fees",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
                                     SizedBox(width: 20,),
-                                    Expanded(child: Text("100/-",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16)
+                                    Expanded(child: Text(_contacts.feesdue.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 16)
                                       ,textAlign: TextAlign.end,)),
                                   ],
                                 ),
                                 const SizedBox(height: 20,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: const [
+                                  children:  [
                                     SizedBox(width: 100,
                                         child: Text("Fee details",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
                                     SizedBox(width: 20,),
-                                    Expanded(child: Text("2021-22",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
+                                    Expanded(child: Text(_contacts.year,style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
                                   ],
                                 ),
                                 const Divider(color: ColorConstant.grey,),
@@ -259,15 +259,38 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                   children: [
                                     Row(
                                       children: [
-                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,),
+                                        _contacts.q1paystatus == "Unpaid" ?
+                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
                                         const SizedBox(width: 10,),
                                         const Text("Q1",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),),
                                       ],
                                     ),
                                     const SizedBox(width: 20,),
-                                    const Expanded(child: Text("100/-",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                    Expanded(child: Text(_contacts.q1.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
                                     const SizedBox(width: 20,),
-                                    ElevatedButton(
+                                    _contacts.q1paystatus == "Unpaid" ? ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: ColorConstant.redbtn,
+                                          onPrimary: Colors.white,
+                                          elevation: 3,
+                                          alignment: Alignment.center,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30.0)),
+                                          fixedSize: const Size(80, 30),
+                                          //////// HERE
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              builder: (BuildContext context) => const FeePayment()));
+                                        },
+                                        child: Text(
+                                          _contacts.q1paystatus,
+                                          style:
+                                          TextStyle( fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        )
+                                    ) : ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         primary: ColorConstant.lightgreen,
                                         onPrimary: Colors.white,
@@ -282,8 +305,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                                             builder: (BuildContext context) => const FeePayment()));
                                       },
-                                      child: const Text(
-                                        "Paid",
+                                      child: Text(
+                                        _contacts.q1paystatus,
                                         style:
                                         TextStyle( fontSize: 12),
                                         textAlign: TextAlign.center,
@@ -296,15 +319,38 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                   children: [
                                     Row(
                                       children: [
-                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,),
+                                        _contacts.q2paystatus == "Unpaid" ?
+                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
                                         const SizedBox(width: 10,),
                                         const Text("Q2",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
                                       ],
                                     ),
                                     const SizedBox(width: 20,),
-                                    const Expanded(child: Text("100/-",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                    Expanded(child: Text(_contacts.q2.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
                                     const SizedBox(width: 20,),
-                                    ElevatedButton(
+                                    _contacts.q2paystatus == "Unpaid" ? ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: ColorConstant.redbtn,
+                                          onPrimary: Colors.white,
+                                          elevation: 3,
+                                          alignment: Alignment.center,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30.0)),
+                                          fixedSize: const Size(80, 30),
+                                          //////// HERE
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              builder: (BuildContext context) => const FeePayment()));
+                                        },
+                                        child: Text(
+                                          _contacts.q2paystatus,
+                                          style:
+                                          TextStyle( fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        )
+                                    ) : ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         primary: ColorConstant.lightgreen,
                                         onPrimary: Colors.white,
@@ -319,8 +365,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                                             builder: (BuildContext context) => const FeePayment()));
                                       },
-                                      child: const Text(
-                                        "Paid",
+                                      child: Text(
+                                        _contacts.q2paystatus,
                                         style:
                                         TextStyle( fontSize: 12),
                                         textAlign: TextAlign.center,
@@ -333,17 +379,40 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                   children: [
                                     Row(
                                       children: [
-                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20),
+                                        _contacts.q3paystatus == "Unpaid" ?
+                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
                                         const SizedBox(width: 10,),
                                         const Text("Q3",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
                                       ],
                                     ),
                                     const SizedBox(width: 20,),
-                                    const Expanded(child: Text("100/-",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                    Expanded(child: Text(_contacts.q3.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
                                     const SizedBox(width: 20,),
-                                    ElevatedButton(
+                                    _contacts.q3paystatus == "Unpaid" ? ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: ColorConstant.redbtn,
+                                          onPrimary: Colors.white,
+                                          elevation: 3,
+                                          alignment: Alignment.center,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30.0)),
+                                          fixedSize: const Size(80, 30),
+                                          //////// HERE
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              builder: (BuildContext context) => const FeePayment()));
+                                        },
+                                        child: Text(
+                                          _contacts.q3paystatus,
+                                          style:
+                                          TextStyle( fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        )
+                                    ) : ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: ColorConstant.redbtn,
+                                        primary: ColorConstant.lightgreen,
                                         onPrimary: Colors.white,
                                         elevation: 3,
                                         alignment: Alignment.center,
@@ -356,8 +425,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                                             builder: (BuildContext context) => const FeePayment()));
                                       },
-                                      child: const Text(
-                                        "Unpaid",
+                                      child: Text(
+                                        _contacts.q3paystatus,
                                         style:
                                         TextStyle( fontSize: 12),
                                         textAlign: TextAlign.center,
@@ -370,17 +439,40 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                   children: [
                                     Row(
                                       children: [
-                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20),
+                                        _contacts.q1paystatus == "Unpaid" ?
+                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
                                         const SizedBox(width: 10,),
                                         const Text("Q4",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
                                       ],
                                     ),
                                     const SizedBox(width: 20,),
-                                    const Expanded(child: Text("100/-",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                    Expanded(child: Text(_contacts.q4.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
                                     const SizedBox(width: 20,),
-                                    ElevatedButton(
+                                    _contacts.q4paystatus == "Unpaid" ? ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: ColorConstant.redbtn,
+                                          onPrimary: Colors.white,
+                                          elevation: 3,
+                                          alignment: Alignment.center,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30.0)),
+                                          fixedSize: const Size(80, 30),
+                                          //////// HERE
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              builder: (BuildContext context) => const FeePayment()));
+                                        },
+                                        child: Text(
+                                          _contacts.q4paystatus,
+                                          style:
+                                          TextStyle( fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        )
+                                    ) : ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: ColorConstant.redbtn,
+                                        primary: ColorConstant.lightgreen,
                                         onPrimary: Colors.white,
                                         elevation: 3,
                                         alignment: Alignment.center,
@@ -393,8 +485,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                                             builder: (BuildContext context) => const FeePayment()));
                                       },
-                                      child: const Text(
-                                        "Unpaid",
+                                      child: Text(
+                                        _contacts.q4paystatus,
                                         style:
                                         TextStyle( fontSize: 12),
                                         textAlign: TextAlign.center,

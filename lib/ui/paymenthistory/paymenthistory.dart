@@ -228,6 +228,8 @@ class PaymentHistoryState extends State<PaymentHistory> {
                   );
                 }),
               ],
-            )));
+            )
+        )
+    );
   }
 }

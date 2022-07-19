@@ -23,4 +23,15 @@ class FeePayPresenter {
       _view.showError();
     });
   }
+  void gethistory() {
+    assert(_view != null);
+
+    _repository
+        .fetchHistory()
+        .then((contacts) => _view.showHistory(contacts))
+        .catchError((onError) {
+      print(onError);
+      _view.showError();
+    });
+  }
 }

@@ -4,6 +4,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/model/feesdetail.dart';
+import 'package:sophia/model/history.dart';
 import 'package:sophia/ui/feepayment/feepaycontract.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
@@ -27,7 +28,7 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
   late FeePayPresenter _presenter;
 
   FeesDetail _contacts = FeesDetail( name: "", standard: "",year:"",feesdue: 0,q1:0,q1paystatus:"",q2:0,q2paystatus: "",q3:0,q3paystatus: "",q4:0,q4paystatus: "");
-
+  late List<History> _history = <History>[];
   late bool _isLoading;
 
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -44,6 +45,7 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     BackButtonInterceptor.add(myInterceptor);
     _isLoading = true;
     _presenter.getfeesdetail();
+    _presenter.gethistory();
   }
 
   @override
@@ -191,7 +193,201 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
             width: MediaQuery.of(context).size.width,
             child: Visibility(
               visible: visible,
-              replacement: PaymentHistory(),
+              replacement: //PaymentHistory(),
+              Container(
+                  margin: const EdgeInsets.all(10),
+                  child: ListView(
+                    children: [
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: _history.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin:  const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: Card(
+                                color: ColorConstant.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Container(
+                                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children:  [
+                                          SizedBox(
+                                            width: 120,
+                                            child: Text(
+                                              "Name",
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                              child: Text(
+                                                _history[index].name,
+                                                style: TextStyle(
+                                                    color: ColorConstant.bluetext,
+                                                    fontSize: 16),
+                                                textAlign: TextAlign.start,
+                                              )),
+                                        ],
+                                      ),
+                                      const Divider(
+                                        color: ColorConstant.grey,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children:  [
+                                          SizedBox(width: 120,
+                                            child: Text(
+                                              "Class",
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              _history[index].standard,
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children:  [
+                                          SizedBox(width: 120,
+                                            child: Text(
+                                              "Due fees",
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                              child: Text(
+                                                _history[index].feesdue.toString(),
+                                                style: TextStyle(
+                                                    color: ColorConstant.bluetext,
+                                                    fontSize: 16),
+                                                textAlign: TextAlign.start,
+                                              )),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children:  [
+                                          SizedBox(width: 120,
+                                            child: Text(
+                                              "Fee details",
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              _history[index].feesdetail,
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children:  [
+                                          SizedBox(
+                                            width: 120,
+                                            child: Text(
+                                              "Payment Date",
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          SizedBox(width: 20,),
+                                          Expanded(
+                                            child: Text(
+                                              _history[index].paymentdate,
+                                              style: TextStyle(
+                                                  color: ColorConstant.bluetext,
+                                                  fontSize: 16),textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: ColorConstant.darkgreen,
+                                              onPrimary: Colors.white,
+                                              elevation: 3,
+                                              alignment: Alignment.center,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(30.0)),
+                                              fixedSize: const Size(214, 35),
+                                              //////// HERE
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pushReplacement(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext context) =>
+                                                      const FeePayment()));
+                                            },
+                                            child:  const Text(
+                                              DownloadReceiptbtn,
+                                              style: TextStyle(fontSize: 16),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ],
+                  )
+              ),
             //  child: FeeDue(),
               child: Container(
                   color: ColorConstant.bggrey,
@@ -547,6 +743,14 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     setState(() {
       _contacts = detail;
       _isLoading = false;
+    });
+  }
+
+  @override
+  void showHistory(List<History> items) {
+    setState(() {
+      _history = items;
+
     });
   }
 }

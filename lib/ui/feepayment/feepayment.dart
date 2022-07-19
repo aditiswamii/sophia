@@ -281,8 +281,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                           //////// HERE
                                         ),
                                         onPressed: () {
-                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                              builder: (BuildContext context) => const FeePayment()));
+                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                          //     builder: (BuildContext context) => const FeePayment()));
                                         },
                                         child: Text(
                                           _contacts.q1paystatus,
@@ -302,8 +302,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         //////// HERE
                                       ),
                                       onPressed: () {
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                            builder: (BuildContext context) => const FeePayment()));
+                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        //     builder: (BuildContext context) => const FeePayment()));
                                       },
                                       child: Text(
                                         _contacts.q1paystatus,
@@ -341,8 +341,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                           //////// HERE
                                         ),
                                         onPressed: () {
-                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                              builder: (BuildContext context) => const FeePayment()));
+                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                          //     builder: (BuildContext context) => const FeePayment()));
                                         },
                                         child: Text(
                                           _contacts.q2paystatus,
@@ -362,8 +362,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         //////// HERE
                                       ),
                                       onPressed: () {
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                            builder: (BuildContext context) => const FeePayment()));
+                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        //     builder: (BuildContext context) => const FeePayment()));
                                       },
                                       child: Text(
                                         _contacts.q2paystatus,
@@ -401,8 +401,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                           //////// HERE
                                         ),
                                         onPressed: () {
-                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                              builder: (BuildContext context) => const FeePayment()));
+                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                          //     builder: (BuildContext context) => const FeePayment()));
                                         },
                                         child: Text(
                                           _contacts.q3paystatus,
@@ -422,8 +422,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         //////// HERE
                                       ),
                                       onPressed: () {
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                            builder: (BuildContext context) => const FeePayment()));
+                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        //     builder: (BuildContext context) => const FeePayment()));
                                       },
                                       child: Text(
                                         _contacts.q3paystatus,
@@ -461,8 +461,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                           //////// HERE
                                         ),
                                         onPressed: () {
-                                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                              builder: (BuildContext context) => const FeePayment()));
+                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                          //     builder: (BuildContext context) => const FeePayment()));
                                         },
                                         child: Text(
                                           _contacts.q4paystatus,
@@ -482,8 +482,8 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                         //////// HERE
                                       ),
                                       onPressed: () {
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                            builder: (BuildContext context) => const FeePayment()));
+                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        //     builder: (BuildContext context) => const FeePayment()));
                                       },
                                       child: Text(
                                         _contacts.q4paystatus,

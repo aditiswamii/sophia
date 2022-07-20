@@ -1,25 +1,47 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sophia/colors/colors.dart';
+import 'package:sophia/model/success.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/string.dart';
+import 'changepasswordcontract.dart';
+import 'changepasswordpresenter.dart';
 
 class ChangePassword extends StatefulWidget {
+
   ChangePassword({Key? key}) : super(key: key);
 
   @override
   ChangePasswordState createState() => ChangePasswordState();
 }
 
-class ChangePasswordState extends State<ChangePassword> {
+class ChangePasswordState extends State<ChangePassword> implements ChangePasswordContract{
+
+  late ChangePasswordPresenter _presenter;
+
   TextEditingController mobilecontroller = TextEditingController();
-  TextEditingController passcontroller = TextEditingController();
-  bool _passwordVisible = true;
+  TextEditingController cpasscontroller = TextEditingController();
+  TextEditingController npasscontroller = TextEditingController();
+  TextEditingController rnpasscontroller = TextEditingController();
+  bool _cpasswordVisible = true;
+  bool _npasswordVisible = true;
+  bool _rnpasswordVisible = true;
   bool value = false;
   bool visibility = false;
-
+  final _form = GlobalKey<FormState>();
+  void _saveForm() {
+    final isValid = _form.currentState?.validate();
+    log('data: $isValid');
+    if (!isValid!) {
+      return;
+    }
+  }
+  ChangePasswordState() {
+    _presenter = ChangePasswordPresenter(this);
+  }
   Future<void> dialNumber(
       {required String phoneNumber, required BuildContext context}) async {
     final url = "tel:$phoneNumber";
@@ -59,7 +81,7 @@ class ChangePasswordState extends State<ChangePassword> {
             color: Colors.white,
             child: ListView(children: [
               Container(
-                height: MediaQuery.of(context).size.height* 65/100,
+                margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -70,34 +92,126 @@ class ChangePasswordState extends State<ChangePassword> {
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
                       child: Center(
                         child: TextFormField(
-                          controller: passcontroller,
+                          controller: cpasscontroller,
                           maxLength: 100,
-                          obscureText: _passwordVisible,
+                          obscureText: _cpasswordVisible,
                           obscuringCharacter: "*",
                           decoration: InputDecoration(
                             filled: true,
                             contentPadding: EdgeInsets.all(10),
-                            hintText: HintPassword,
+                            hintText: 'Current Password',
                             hintStyle: TextStyle(color: ColorConstant.grey),
                             fillColor: Colors.white60,
                             border: OutlineInputBorder(
 
                                 borderRadius: BorderRadius.circular(6),
-                                borderSide: BorderSide.none
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                )
                             ),
                             suffixIcon: IconButton(
-                                icon: Icon(_passwordVisible
+                                icon: Icon(_cpasswordVisible
                                     ? Icons.visibility_off
                                     : Icons.visibility,color: ColorConstant.darkgreen,),
                                 onPressed: () {
                                   setState(() {
-                                    _passwordVisible = !_passwordVisible;
+                                    _cpasswordVisible = !_cpasswordVisible;
                                   });
                                 }),
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "*Password needed";
+                              return "Current Password needed";
+                            }
+                          },
+                          keyboardType: TextInputType.text,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.singleLineFormatter
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 80,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                      child: Center(
+                        child: TextFormField(
+                          controller: npasscontroller,
+                          maxLength: 100,
+                          obscureText: _npasswordVisible,
+                          obscuringCharacter: "*",
+                          decoration: InputDecoration(
+                            filled: true,
+                            contentPadding: EdgeInsets.all(10),
+                            hintText: 'New Password',
+                            hintStyle: TextStyle(color: ColorConstant.grey),
+                            fillColor: Colors.white60,
+                            border: OutlineInputBorder(
+
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                )
+                            ),
+                            suffixIcon: IconButton(
+                                icon: Icon(_npasswordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,color: ColorConstant.darkgreen,),
+                                onPressed: () {
+                                  setState(() {
+                                    _npasswordVisible = !_npasswordVisible;
+                                  });
+                                }),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "New Password needed";
+                            }
+                          },
+                          keyboardType: TextInputType.text,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.singleLineFormatter
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 80,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                      child: Center(
+                        child: TextFormField(
+                          controller: rnpasscontroller,
+                          maxLength: 100,
+                          obscureText: _rnpasswordVisible,
+                          obscuringCharacter: "*",
+                          decoration: InputDecoration(
+                            filled: true,
+                            contentPadding: EdgeInsets.all(10),
+                            hintText: 'Retype New Password',
+                            hintStyle: TextStyle(color: ColorConstant.grey),
+                            fillColor: Colors.white60,
+                            border: OutlineInputBorder(
+
+                                borderRadius: BorderRadius.circular(6),
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                )
+                            ),
+                            suffixIcon: IconButton(
+                                icon: Icon(_rnpasswordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,color: ColorConstant.darkgreen,),
+                                onPressed: () {
+                                  setState(() {
+                                    _rnpasswordVisible = !_rnpasswordVisible;
+                                  });
+                                }),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Retype New Password needed";
                             }
                           },
                           keyboardType: TextInputType.text,
@@ -122,11 +236,30 @@ class ChangePasswordState extends State<ChangePassword> {
                           //////// HERE
                         ),
                         onPressed: () {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (BuildContext context) => HomeScreen()));
+                            if(cpasscontroller.text.isNotEmpty){
+                              if(npasscontroller.text.isNotEmpty){
+                                if(npasscontroller.text.isNotEmpty == rnpasscontroller.text.isNotEmpty){
+                                  _presenter.changepassword(cpasscontroller.text.toString(),
+                                      npasscontroller.text.toString());
+                                } else {
+                                  // Scaffold.of(context)
+                                  //     .showSnackBar(SnackBar(content: Text('Processing Data')));
+                                }
+                              } else {
+                                // Scaffold.of(context)
+                                //     .showSnackBar(SnackBar(content: Text('Processing Data')));
+                              }
+                            } else {
+                              // Scaffold.of(context)
+                              //     .showSnackBar(SnackBar(content: Text('Processing Data')));
+                            }
+
+
+
+
                         },
                         child: const Text(
-                          Loginbtn,
+                          "Submit",
                           style:
                           TextStyle( fontSize: 16),
                           textAlign: TextAlign.center,
@@ -147,5 +280,16 @@ class ChangePasswordState extends State<ChangePassword> {
               // )
 
             ])));
+  }
+
+  @override
+  void showError() {
+
+  }
+
+  @override
+  void success(Success succ) {
+    if(succ.status==200)
+      Navigator.of(context).pop();
   }
 }

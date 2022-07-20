@@ -2,36 +2,28 @@ import 'package:sophia/di/injection.dart';
 import 'package:sophia/repository/get_student_contract.dart';
 import 'package:sophia/ui/feepayment/feepaycontract.dart';
 
-class FeePayPresenter {
+import 'changepasswordcontract.dart';
 
-  FeePayContract _view;
+class ChangePasswordPresenter {
+
+  ChangePasswordContract _view;
 
   late StudentRepository _repository;
 
-  FeePayPresenter(this._view) {
+  ChangePasswordPresenter(this._view) {
     _repository = new Injector().studentRepository;
   }
 
-  void getfeesdetail() {
+  void changepassword(String old, String newp) {
     assert(_view != null);
 
     _repository
-        .feesDetail()
-        .then((contacts) => _view.showFeesDetail(contacts))
+        .changePassword(old, newp)
+        .then((contacts) => _view.success(contacts))
         .catchError((onError) {
       print(onError);
       _view.showError();
     });
   }
-  void gethistory() {
-    assert(_view != null);
 
-    _repository
-        .fetchHistory()
-        .then((contacts) => _view.showHistory(contacts))
-        .catchError((onError) {
-      print(onError);
-      _view.showError();
-    });
-  }
 }

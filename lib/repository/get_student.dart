@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:sophia/model/feesdetail.dart';
 import 'package:sophia/model/history.dart';
 import 'package:sophia/model/student.dart';
+import 'package:sophia/model/success.dart';
 import 'package:sophia/repository/get_student_contract.dart';
 import 'package:sophia/utils/fetch_data_exception.dart';
 import 'package:http/http.dart' as http;
@@ -84,7 +85,7 @@ class GetStudentRepository implements StudentRepository {
   }
 
   @override
-  Future<FeesDetail> changePassword(String opassword, String npassword) {
+  Future<Success> changePassword(String opassword, String npassword) {
     String user_id = "6932";
     return http.post(Uri.parse(change_password),
         body: {
@@ -97,8 +98,12 @@ class GetStudentRepository implements StudentRepository {
       }
 
       final contactsContainer = _decoder.convert(jsonBody);
-      final LinkedHashMap<String,dynamic> contactItems = contactsContainer['data'];
-      return FeesDetail.fromMap(contactItems);
+      final int status = contactsContainer['status'];
+      final String message = contactsContainer['message'];
+      Map map = {'status': status, 'message': message};
+
+      final LinkedHashMap<String,dynamic> contactItems = LinkedHashMap.from(map);
+      return Success.fromMap(contactItems);
       //  return contactItems.map((contactRaw) => Student.fromMap(contactRaw));
     });
   }

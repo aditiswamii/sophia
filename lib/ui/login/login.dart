@@ -161,8 +161,10 @@ class LoginScreenState extends State<LoginScreen> {
                          //////// HERE
                        ),
                        onPressed: () {
-                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                             builder: (BuildContext context) => HomeScreen()));
+                         // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                         //     builder: (BuildContext context) => HomeScreen()));
+                         Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                             builder: (context) => HomeScreen(), maintainState: false));
                        },
                        child: const Text(
                          Loginbtn,

@@ -15,6 +15,7 @@ class GetStudentRepository implements StudentRepository {
   static const url = 'https://sophia.mobilogicx.com/api/child_list';
   static const fee_details = 'https://sophia.mobilogicx.com/api/fee_details';
   static const fee_history = 'https://sophia.mobilogicx.com/api/payment_historydetail';
+  static const change_password = 'https://sophia.mobilogicx.com/api/change_password';
   final JsonDecoder _decoder = JsonDecoder();
 
   @override
@@ -79,6 +80,26 @@ class GetStudentRepository implements StudentRepository {
 
       return contactItems.map((contactRaw) => History.fromMap(contactRaw))
           .toList();
+    });
+  }
+
+  @override
+  Future<FeesDetail> changePassword(String opassword, String npassword) {
+    String user_id = "6932";
+    return http.post(Uri.parse(change_password),
+        body: {
+          'user_id': user_id,'current_password': opassword,'new_password': npassword}).then((http.Response response) {
+      final String jsonBody = response.body;
+      final statusCode = response.statusCode;
+
+      if(statusCode < 200 || statusCode >= 300 || jsonBody == null) {
+        throw new FetchDataException("Error while getting contacts [StatusCode:$statusCode, Error:${response.reasonPhrase}]");
+      }
+
+      final contactsContainer = _decoder.convert(jsonBody);
+      final LinkedHashMap<String,dynamic> contactItems = contactsContainer['data'];
+      return FeesDetail.fromMap(contactItems);
+      //  return contactItems.map((contactRaw) => Student.fromMap(contactRaw));
     });
   }
 }

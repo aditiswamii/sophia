@@ -12,6 +12,7 @@ import 'package:sophia/ui/login/login.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/string.dart';
+import '../changepassword/changepassword.dart';
 import '../feedue/feedue.dart';
 import '../paymenthistory/paymenthistory.dart';
 
@@ -112,9 +113,10 @@ class LeftDrawerState extends State<LeftDrawer> {
                ),
                onTap: () {
                  // Navigator.pushReplacement(context,
-                 //     MaterialPageRoute(builder: (context) => Teaching()));
-
-                 Navigator.pop(context);
+                 //     MaterialPageRoute(builder: (context) => ChangePassword()));
+                 Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+                     builder: (context) => ChangePassword(), maintainState: false));
+                // Navigator.pop(context);
                },
              ),
              ListTile(

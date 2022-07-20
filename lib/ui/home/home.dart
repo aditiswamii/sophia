@@ -183,8 +183,10 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
                                              //////// HERE
                                            ),
                                            onPressed: () {
-                                             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                                 builder: (BuildContext context) => FeePayment()));
+                                             // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                             //     builder: (BuildContext context) => FeePayment()));
+                                             Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+                                                 builder: (context) => FeePayment(), maintainState: false));
                                            },
                                            child: const Text(
                                              View,

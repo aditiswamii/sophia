@@ -1,27 +1,55 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:sophia/colors/colors.dart';
+import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
+import 'package:sophia/utils/prefernce.dart';
 import 'package:sophia/utils/string.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-void main() {
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+String? _token;
+String? get token => _token;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+  await Firebase.initializeApp();
+  gettoken();
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     // systemNavigationBarColor: Colors.white, // navigation bar color
     statusBarColor: ColorConstant.darkgreen, // status bar color
     statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
     statusBarBrightness: Brightness.light,
   ));
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp( MaterialApp(
       navigatorKey: navigatorKey,
       theme: ThemeData(fontFamily: "Montserrat"),
       debugShowCheckedModeBanner: false,
       home: MyApp()));
 }
+void gettoken() async {
+  _token = await _firebaseMessaging.getToken();
 
+  _firebaseMessaging.onTokenRefresh.listen((token) {
+    _token = token;
+    AppPreferences().setIsRegistered(false);
+    AppPreferences().setFCMToken(_token!);
+  });
+  log(_token!);
+  AppPreferences().setFCMToken(_token!);
+}
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -36,11 +64,21 @@ class _State extends State<MyApp> {
     super.initState();
     Timer(
         const Duration(seconds: 3),
-            () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen()))
+            () {
+          Autologin();
+            }
     );
   }
-
+  Autologin() async {
+    final bool? loggedin = await AppPreferences().isLoggedIn();
+    if(loggedin==true){
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomeScreen()));
+    }else{
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (BuildContext context) => LoginScreen()));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -8,9 +8,6 @@ class Student {
 
   final int feesdue;
 
-
-
-
   const Student({required this.child_id, required this.name, required this.standard, required this.feesdue});
 
   Student.fromMap(Map<String, dynamic>  map) :

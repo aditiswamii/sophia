@@ -5,16 +5,23 @@ import 'dart:developer';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sophia/colors/colors.dart';
+import 'package:sophia/main.dart';
+import 'package:sophia/model/success.dart';
+import 'package:sophia/ui/drawer/drawercontract.dart';
 import 'package:sophia/ui/feepayment/feepayment.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
+import 'package:sophia/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utils/prefernce.dart';
 import '../../utils/string.dart';
 import '../changepassword/changepassword.dart';
 import '../feedue/feedue.dart';
 import '../paymenthistory/paymenthistory.dart';
+import 'drawerpresenter.dart';
 
 class LeftDrawer extends StatefulWidget {
   const LeftDrawer({Key? key}) : super(key: key);
@@ -23,7 +30,12 @@ class LeftDrawer extends StatefulWidget {
   LeftDrawerState createState() => LeftDrawerState();
 }
 
-class LeftDrawerState extends State<LeftDrawer> {
+class LeftDrawerState extends State<LeftDrawer> implements DrawerContract{
+
+  late DrawerPresenter _presenter;
+  LeftDrawerState() {
+    _presenter =DrawerPresenter(this);
+  }
   Future<void> dialNumber(
       {required String phoneNumber, required BuildContext context}) async {
     final url = "tel:$phoneNumber";
@@ -33,7 +45,6 @@ class LeftDrawerState extends State<LeftDrawer> {
       SnackBar(
         content: Text("Unable to call $phoneNumber"),
       );
-
 
     }
 
@@ -77,11 +88,10 @@ class LeftDrawerState extends State<LeftDrawer> {
                children: [
                  ListTile(
                    visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                   leading: Image.asset(
-                     "assets/images/sidemenu.png",
-                     color: ColorConstant.heading,
-                     height: 24,
-                     width: 24,
+                   leading: SvgPicture.asset("assets/images/3671910_wallet_icon.svg",
+                     alignment: Alignment.center, color: ColorConstant.heading,
+                     height: 22,
+                     width: 22,
                    ),
                    title: const Text(
                      'Fees',
@@ -99,11 +109,10 @@ class LeftDrawerState extends State<LeftDrawer> {
 
              ListTile(
                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-               leading: Image.asset(
-                 "assets/images/sidemenu.png",
-                 color: ColorConstant.heading,
-                 height: 24,
-                 width: 24,
+               leading: SvgPicture.asset("assets/images/changepass.svg",
+                 alignment: Alignment.center, color: ColorConstant.heading,
+                 height: 22,
+                 width: 22,
                ),
                title: const Text(
                  'Change Password',
@@ -121,11 +130,10 @@ class LeftDrawerState extends State<LeftDrawer> {
              ),
              ListTile(
                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-               leading: Image.asset(
-                 "assets/images/sidemenu.png",
-                 color: ColorConstant.heading,
-                 height: 24,
-                 width: 24,
+               leading: SvgPicture.asset("assets/images/contactus.svg",
+                 alignment: Alignment.center, color: ColorConstant.heading,
+                 height: 22,
+                 width: 22,
                ),
                title: const Text(
                  'Contact Us',
@@ -139,11 +147,10 @@ class LeftDrawerState extends State<LeftDrawer> {
              ),
              ListTile(
                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-               leading: Image.asset(
-                 "assets/images/sidemenu.png",
-                 color: ColorConstant.heading,
-                 height: 24,
-                 width: 24,
+               leading:  SvgPicture.asset("assets/images/privacy.svg",
+                 alignment: Alignment.center, color: ColorConstant.heading,
+                 height: 22,
+                 width: 22,
                ),
                title: const Text(
                  'Privacy Policy',
@@ -172,11 +179,12 @@ class LeftDrawerState extends State<LeftDrawer> {
                  TextStyle(fontSize: 16, color:ColorConstant.heading,fontWeight: FontWeight.bold,fontFamily: 'Montserrat'),
                  textAlign: TextAlign.start,
                ),
-               onTap: () {
-                 // Navigator.pushReplacement(context,
-                 //     MaterialPageRoute(builder: (context) => Teaching()));
-
-                 Navigator.pop(context);
+               onTap: () async {
+                 final String? deviceid = await AppPreferences().getDeviceid();
+                 opendialog(context);
+                _presenter.logout("1", deviceid!);
+                 AppPreferences().setLogin(false);
+                 // Navigator.pop(context);
                },
              ),
                ],
@@ -210,6 +218,19 @@ class LeftDrawerState extends State<LeftDrawer> {
      ),
     );
 
+  }
+
+  @override
+  void showError() {
+    // TODO: implement showError
+  }
+
+  @override
+  void success(Success succ) {
+    hideOpenDialog(context);
+   AppPreferences().clear();
+   Navigator.of(navigatorKey.currentState!.context).pushReplacement(MaterialPageRoute(
+       builder: (BuildContext context) => LoginScreen()));
   }
 }
 //Designed and Developed by Neologicx

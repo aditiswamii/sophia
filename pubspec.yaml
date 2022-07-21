@@ -37,6 +37,13 @@ dependencies:
   back_button_interceptor:
   url_launcher:
   http:
+  flutter_downloader: ^1.8.1
+  shared_preferences:
+  firebase_core: ^1.10.0
+  firebase_messaging: ^11.2.11
+  device_info_plus: ^3.2.3
+  flutter_svg:
+  path_provider:
 dev_dependencies:
   flutter_test:
     sdk: flutter

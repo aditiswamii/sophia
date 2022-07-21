@@ -1,10 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sophia/colors/colors.dart';
+import 'package:sophia/main.dart';
+import 'package:sophia/model/login.dart';
 import 'package:sophia/ui/home/home.dart';
+import 'package:sophia/ui/login/logincontract.dart';
+import 'package:sophia/utils/prefernce.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utils/constants.dart';
 import '../../utils/string.dart';
+import '../dialog/loading.dart';
+import 'loginpresenter.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -13,38 +22,56 @@ class LoginScreen extends StatefulWidget {
   LoginScreenState createState() => LoginScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> implements LoginContract {
   TextEditingController mobilecontroller = TextEditingController();
   TextEditingController passcontroller = TextEditingController();
   bool _passwordVisible = true;
   bool value = false;
   bool visibility = false;
+  bool? _isLoading;
 
+  late LoginPresenter _presenter;
+
+  LoginScreenState() {
+    _presenter = LoginPresenter(this);
+  }
+  validatePass(String value) {
+    if (value.length > 5)
+      return true;
+    else
+      return false;
+  }
+  validateMobile(String value) {
+// Indian Mobile number are of 10 digit only
+    if (value.length == 10) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
   Future<void> dialNumber(
       {required String phoneNumber, required BuildContext context}) async {
     final url = "tel:$phoneNumber";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      SnackBar(
-        content: Text("Unable to call $phoneNumber"),
-      );
-
-
+      showInSnackBar("Unable to call $phoneNumber");
     }
 
     return;
   }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-        //  resizeToAvoidBottomInset: true,
         body: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
@@ -161,10 +188,31 @@ class LoginScreenState extends State<LoginScreen> {
                          //////// HERE
                        ),
                        onPressed: () {
-                         // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                         //     builder: (BuildContext context) => HomeScreen()));
-                         Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                             builder: (context) => HomeScreen(), maintainState: false));
+                         if(mobilecontroller.text.isNotEmpty){
+                           if(passcontroller.text.isNotEmpty){
+                             if(validateMobile(mobilecontroller.text.toString())) {
+                               if(validatePass(passcontroller.text.toString())) {
+                                 opendialog(context);
+                                 _presenter.getlogindetail(
+                                     mobilecontroller.text.toString(),
+                                     passcontroller.text.toString());
+                               }else{
+                                 showInSnackBar(
+                                       'Password Must be more than 5 character');
+
+                               }
+                               }else{
+                               showInSnackBar(
+                                       'Mobile number must be of 10 digits');
+                               }
+                           } else {
+                             showInSnackBar(
+                                 'Please enter password');
+                           }
+                         } else {
+                           showInSnackBar(
+                               'Please enter mobile number');
+                         }
                        },
                        child: const Text(
                          Loginbtn,
@@ -202,13 +250,27 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
 
               ),
-              // Container(
-              //   height: MediaQuery.of(context).size.height * 35/ 100,
-              //   alignment: Alignment.centerLeft,
-              //   color: Colors.pink,
-              //   child: Image.asset("assets/images/bg1.png",scale:1.2,color: Colors.white,),
-              // )
 
             ])));
+  }
+
+  @override
+  void showError() {
+    // TODO: implement showError
+  }
+
+  @override
+  void showLoginDetail(LoginDetails detail) {
+    hideOpenDialog(navigatorKey.currentContext!);
+    showInSnackBar("Login Successfully");
+    setState((){
+      AppPreferences().setAuthToken(detail.token);
+      AppPreferences().setParentName(detail.parent_name);
+      AppPreferences().setuserId(detail.parent_id);
+      AppPreferences().setLogin(true);
+    });
+
+    Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+        builder: (context) => HomeScreen(), maintainState: false));
   }
 }

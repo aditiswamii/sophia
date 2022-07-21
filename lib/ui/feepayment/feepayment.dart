@@ -1,8 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sophia/colors/colors.dart';
+import 'package:sophia/main.dart';
 import 'package:sophia/model/feesdetail.dart';
 import 'package:sophia/model/history.dart';
 import 'package:sophia/ui/feepayment/feepaycontract.dart';
@@ -11,6 +17,7 @@ import 'package:sophia/ui/login/login.dart';
 import 'package:sophia/ui/notification/notification.dart';
 import 'package:sophia/utils/string.dart';
 
+import '../../utils/constants.dart';
 import '../drawer/drawer.dart';
 import '../feedue/feedue.dart';
 import '../paymenthistory/paymenthistory.dart';
@@ -44,6 +51,7 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
     _isLoading = true;
+    // opendialog(navigatorKey.currentState!.context);
     _presenter.getfeesdetail();
     _presenter.gethistory();
   }
@@ -60,9 +68,50 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     // Do some stuff.
     return true;
   }
+  ReceivePort _port = ReceivePort();
+  String? id ;
+  DownloadTaskStatus? status ;
+  int? progress ;
+  Future<void> download() async {
+    final Directory extDir = await getTemporaryDirectory();
+    final String dirPath = '${extDir.path}/sophia/receipt';
+    await Directory(dirPath).create(recursive: true);
+    _port.listen((dynamic data) {
 
+      setState((){
+        id = data[0];
+        status = data[1];
+        progress = data[2];
+      });
+
+    });
+    FlutterDownloader.registerCallback(downloadCallback);
+    //https://rajuvas.org/wp-content/uploads/gallery/KVK/success_story/KVK_Nohar_October_2021.pdf
+    final taskId = await FlutterDownloader.enqueue(
+      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      savedDir: dirPath,
+      showNotification: true, // show download progress in status bar (for Android)
+      openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+    );
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+
+
+
+
+  }
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    final SendPort? send = IsolateNameServer.lookupPortByName('downloader_send_port');
+    send!.send([id, status, progress]);
+  }
+
+  String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
   @override
   Widget build(BuildContext context) {
+    // if(_contacts.name.isEmpty){
+    //   opendialog(context);
+    // }else if(_contacts.name.isNotEmpty){
+    //   hideOpenDialog(context);
+    // }
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: ColorConstant.bggrey,
@@ -196,195 +245,209 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
               replacement: //PaymentHistory(),
               Container(
                   margin: const EdgeInsets.all(10),
-                  child: ListView(
+                  child: Stack(
                     children: [
-                      ListView.builder(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: _history.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin:  const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: Card(
-                                color: ColorConstant.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Container(
-                                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children:  [
-                                          SizedBox(
-                                            width: 120,
-                                            child: Text(
-                                              "Name",
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                              child: Text(
-                                                _history[index].name,
-                                                style: TextStyle(
-                                                    color: ColorConstant.bluetext,
-                                                    fontSize: 16),
-                                                textAlign: TextAlign.start,
-                                              )),
-                                        ],
-                                      ),
-                                      const Divider(
-                                        color: ColorConstant.grey,
-                                      ),
-                                      Row(
+
+                      ListView(
+                        children: [
+                          ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: _history.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin:  const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  width: MediaQuery.of(context).size.width - 40,
+                                  child: Card(
+                                    color: ColorConstant.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20)),
+                                    child: Container(
+                                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                      child: Column(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children:  [
-                                          SizedBox(width: 120,
-                                            child: Text(
-                                              "Class",
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              _history[index].standard,
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children:  [
-                                          SizedBox(width: 120,
-                                            child: Text(
-                                              "Due fees",
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                              child: Text(
-                                                _history[index].feesdue.toString(),
-                                                style: TextStyle(
-                                                    color: ColorConstant.bluetext,
-                                                    fontSize: 16),
-                                                textAlign: TextAlign.start,
-                                              )),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children:  [
-                                          SizedBox(width: 120,
-                                            child: Text(
-                                              "Fee details",
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              _history[index].feesdetail,
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children:  [
-                                          SizedBox(
-                                            width: 120,
-                                            child: Text(
-                                              "Payment Date",
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
-                                          SizedBox(width: 20,),
-                                          Expanded(
-                                            child: Text(
-                                              _history[index].paymentdate,
-                                              style: TextStyle(
-                                                  color: ColorConstant.bluetext,
-                                                  fontSize: 16),textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              primary: ColorConstant.darkgreen,
-                                              onPrimary: Colors.white,
-                                              elevation: 3,
-                                              alignment: Alignment.center,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(30.0)),
-                                              fixedSize: const Size(214, 35),
-                                              //////// HERE
-                                            ),
-                                            onPressed: () {
-                                              Navigator.of(context).pushReplacement(
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext context) =>
-                                                      const FeePayment()));
-                                            },
-                                            child:  const Text(
-                                              DownloadReceiptbtn,
-                                              style: TextStyle(fontSize: 16),
-                                              textAlign: TextAlign.center,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children:  [
+                                              SizedBox(
+                                                width: 120,
+                                                child: Text(
+                                                  "Name",
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                  child: Text(
+                                                    _history[index].name,
+                                                    style: TextStyle(
+                                                        color: ColorConstant.bluetext,
+                                                        fontSize: 16),
+                                                    textAlign: TextAlign.start,
+                                                  )),
+                                            ],
+                                          ),
+                                          const Divider(
+                                            color: ColorConstant.grey,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children:  [
+                                              SizedBox(width: 120,
+                                                child: Text(
+                                                  "Class",
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  _history[index].standard,
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children:  [
+                                              SizedBox(width: 120,
+                                                child: Text(
+                                                  "Due fees",
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                  child: Text(
+                                                    _history[index].feesdue.toString(),
+                                                    style: TextStyle(
+                                                        color: ColorConstant.bluetext,
+                                                        fontSize: 16),
+                                                    textAlign: TextAlign.start,
+                                                  )),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children:  [
+                                              SizedBox(width: 120,
+                                                child: Text(
+                                                  "Fee details",
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  _history[index].feesdetail,
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children:  [
+                                              SizedBox(
+                                                width: 120,
+                                                child: Text(
+                                                  "Payment Date",
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              SizedBox(width: 20,),
+                                              Expanded(
+                                                child: Text(
+                                                  _history[index].paymentdate,
+                                                  style: TextStyle(
+                                                      color: ColorConstant.bluetext,
+                                                      fontSize: 16),textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: ColorConstant.darkgreen,
+                                                  onPrimary: Colors.white,
+                                                  elevation: 3,
+                                                  alignment: Alignment.center,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(30.0)),
+                                                  fixedSize: const Size(214, 35),
+                                                  //////// HERE
+                                                ),
+                                                onPressed: ()  {
+                                                  download();
+                                                  // Navigator.of(context).pushReplacement(
+                                                  //     MaterialPageRoute(
+                                                  //         builder: (BuildContext context) =>
+                                                  //         const FeePayment()));
+                                                },
+                                                child:  const Text(
+                                                  DownloadReceiptbtn,
+                                                  style: TextStyle(fontSize: 16),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }),
+                                );
+                              }),
+                        ],
+                      ),
+                      if(_history.isEmpty)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          color: Colors.transparent,
+                            height: 100,width: 100,
+                            child: Center(child: CircularProgressIndicator())),
+                      ),
                     ],
                   )
               ),
@@ -392,337 +455,353 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
               child: Container(
                   color: ColorConstant.bggrey,
                   margin: const EdgeInsets.all(10),
-                  child:ListView(
+                  child:Stack(
                     children: [
-                      SizedBox(
-
-                        width: MediaQuery.of(context).size.width-20,
-                        child: Card(
-                          color: ColorConstant.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children:  [
-                                    SizedBox(
-                                        width: 100,
-                                        child: Text("Name",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
-                                    SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.name,
-                                      style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
-                                  ],
-                                ),
-                                const Divider(color: ColorConstant.grey,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:  [
-                                    SizedBox(width: 100,
-                                        child: Text("Class",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
-                                    SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.standard,style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
-                                  ],
-                                ),
-                                const SizedBox(height: 20,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:  [
-                                    SizedBox(width: 100,
-                                        child: Text("Due fees",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
-                                    SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.feesdue.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 16)
-                                      ,textAlign: TextAlign.end,)),
-                                  ],
-                                ),
-                                const SizedBox(height: 20,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:  [
-                                    SizedBox(width: 100,
-                                        child: Text("Fee details",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
-                                    SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.year,style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
-                                  ],
-                                ),
-                                const Divider(color: ColorConstant.grey,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        _contacts.q1paystatus == "Unpaid" ?
-                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
-                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
-                                        const SizedBox(width: 10,),
-                                        const Text("Q1",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.q1.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
-                                    const SizedBox(width: 20,),
-                                    _contacts.q1paystatus == "Unpaid" ? ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: ColorConstant.redbtn,
-                                          onPrimary: Colors.white,
-                                          elevation: 3,
-                                          alignment: Alignment.center,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(30.0)),
-                                          fixedSize: const Size(80, 30),
-                                          //////// HERE
-                                        ),
-                                        onPressed: () {
-                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                          //     builder: (BuildContext context) => const FeePayment()));
-                                        },
-                                        child: Text(
-                                          _contacts.q1paystatus,
-                                          style:
-                                          TextStyle( fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        )
-                                    ) : ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ColorConstant.lightgreen,
-                                        onPrimary: Colors.white,
-                                        elevation: 3,
-                                        alignment: Alignment.center,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(30.0)),
-                                        fixedSize: const Size(80, 30),
-                                        //////// HERE
-                                      ),
-                                      onPressed: () {
-                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                        //     builder: (BuildContext context) => const FeePayment()));
-                                      },
-                                      child: Text(
-                                        _contacts.q1paystatus,
-                                        style:
-                                        TextStyle( fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        _contacts.q2paystatus == "Unpaid" ?
-                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
-                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
-                                        const SizedBox(width: 10,),
-                                        const Text("Q2",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.q2.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
-                                    const SizedBox(width: 20,),
-                                    _contacts.q2paystatus == "Unpaid" ? ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: ColorConstant.redbtn,
-                                          onPrimary: Colors.white,
-                                          elevation: 3,
-                                          alignment: Alignment.center,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(30.0)),
-                                          fixedSize: const Size(80, 30),
-                                          //////// HERE
-                                        ),
-                                        onPressed: () {
-                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                          //     builder: (BuildContext context) => const FeePayment()));
-                                        },
-                                        child: Text(
-                                          _contacts.q2paystatus,
-                                          style:
-                                          TextStyle( fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        )
-                                    ) : ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ColorConstant.lightgreen,
-                                        onPrimary: Colors.white,
-                                        elevation: 3,
-                                        alignment: Alignment.center,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(30.0)),
-                                        fixedSize: const Size(80, 30),
-                                        //////// HERE
-                                      ),
-                                      onPressed: () {
-                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                        //     builder: (BuildContext context) => const FeePayment()));
-                                      },
-                                      child: Text(
-                                        _contacts.q2paystatus,
-                                        style:
-                                        TextStyle( fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        _contacts.q3paystatus == "Unpaid" ?
-                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
-                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
-                                        const SizedBox(width: 10,),
-                                        const Text("Q3",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.q3.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
-                                    const SizedBox(width: 20,),
-                                    _contacts.q3paystatus == "Unpaid" ? ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: ColorConstant.redbtn,
-                                          onPrimary: Colors.white,
-                                          elevation: 3,
-                                          alignment: Alignment.center,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(30.0)),
-                                          fixedSize: const Size(80, 30),
-                                          //////// HERE
-                                        ),
-                                        onPressed: () {
-                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                          //     builder: (BuildContext context) => const FeePayment()));
-                                        },
-                                        child: Text(
-                                          _contacts.q3paystatus,
-                                          style:
-                                          TextStyle( fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        )
-                                    ) : ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ColorConstant.lightgreen,
-                                        onPrimary: Colors.white,
-                                        elevation: 3,
-                                        alignment: Alignment.center,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(30.0)),
-                                        fixedSize: const Size(80, 30),
-                                        //////// HERE
-                                      ),
-                                      onPressed: () {
-                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                        //     builder: (BuildContext context) => const FeePayment()));
-                                      },
-                                      child: Text(
-                                        _contacts.q3paystatus,
-                                        style:
-                                        TextStyle( fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        _contacts.q1paystatus == "Unpaid" ?
-                                        Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
-                                        Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
-                                        const SizedBox(width: 10,),
-                                        const Text("Q4",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 20,),
-                                    Expanded(child: Text(_contacts.q4.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
-                                    const SizedBox(width: 20,),
-                                    _contacts.q4paystatus == "Unpaid" ? ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: ColorConstant.redbtn,
-                                          onPrimary: Colors.white,
-                                          elevation: 3,
-                                          alignment: Alignment.center,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(30.0)),
-                                          fixedSize: const Size(80, 30),
-                                          //////// HERE
-                                        ),
-                                        onPressed: () {
-                                          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                          //     builder: (BuildContext context) => const FeePayment()));
-                                        },
-                                        child: Text(
-                                          _contacts.q4paystatus,
-                                          style:
-                                          TextStyle( fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        )
-                                    ) : ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ColorConstant.lightgreen,
-                                        onPrimary: Colors.white,
-                                        elevation: 3,
-                                        alignment: Alignment.center,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(30.0)),
-                                        fixedSize: const Size(80, 30),
-                                        //////// HERE
-                                      ),
-                                      onPressed: () {
-                                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                        //     builder: (BuildContext context) => const FeePayment()));
-                                      },
-                                      child: Text(
-                                        _contacts.q4paystatus,
-                                        style:
-                                        TextStyle( fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 40,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      ListView(
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: ColorConstant.darkgreen,
-                              onPrimary: Colors.white,
-                              elevation: 3,
-                              alignment: Alignment.center,
+                          SizedBox(
+
+                            width: MediaQuery.of(context).size.width-20,
+                            child: Card(
+                              color: ColorConstant.white,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
-                              fixedSize: const Size(178, 35),
-                              //////// HERE
+                                  borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children:  [
+                                        SizedBox(
+                                            width: 100,
+                                            child: Text("Name",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
+                                        SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.name,
+                                          style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
+                                      ],
+                                    ),
+                                    const Divider(color: ColorConstant.grey,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children:  [
+                                        SizedBox(width: 100,
+                                            child: Text("Class",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
+                                        SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.standard,style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children:  [
+                                        SizedBox(width: 100,
+                                            child: Text("Due fees",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
+                                        SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.feesdue.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 16)
+                                          ,textAlign: TextAlign.end,)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children:  [
+                                        SizedBox(width: 100,
+                                            child: Text("Fee details",style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),)),
+                                        SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.year,style: TextStyle(color: ColorConstant.bluetext,fontSize: 16),textAlign: TextAlign.end,)),
+                                      ],
+                                    ),
+                                    const Divider(color: ColorConstant.grey,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            _contacts.q1paystatus == "Unpaid" ?
+                                            Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                            Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
+                                            const SizedBox(width: 10,),
+                                            const Text("Q1",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.q1.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                        const SizedBox(width: 20,),
+                                        _contacts.q1paystatus == "Unpaid" ? ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: ColorConstant.redbtn,
+                                              onPrimary: Colors.white,
+                                              elevation: 3,
+                                              alignment: Alignment.center,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30.0)),
+                                              fixedSize: const Size(80, 30),
+                                              //////// HERE
+                                            ),
+                                            onPressed: () {
+                                              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              //     builder: (BuildContext context) => const FeePayment()));
+                                            },
+                                            child: Text(
+                                              _contacts.q1paystatus,
+                                              style:
+                                              TextStyle( fontSize: 12),
+                                              textAlign: TextAlign.center,
+                                            )
+                                        ) : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: ColorConstant.lightgreen,
+                                            onPrimary: Colors.white,
+                                            elevation: 3,
+                                            alignment: Alignment.center,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(30.0)),
+                                            fixedSize: const Size(80, 30),
+                                            //////// HERE
+                                          ),
+                                          onPressed: () {
+                                            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                            //     builder: (BuildContext context) => const FeePayment()));
+                                          },
+                                          child: Text(
+                                            _contacts.q1paystatus,
+                                            style:
+                                            TextStyle( fontSize: 12),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            _contacts.q2paystatus == "Unpaid" ?
+                                            Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                            Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
+                                            const SizedBox(width: 10,),
+                                            const Text("Q2",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.q2.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                        const SizedBox(width: 20,),
+                                        _contacts.q2paystatus == "Unpaid" ? ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: ColorConstant.redbtn,
+                                              onPrimary: Colors.white,
+                                              elevation: 3,
+                                              alignment: Alignment.center,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30.0)),
+                                              fixedSize: const Size(80, 30),
+                                              //////// HERE
+                                            ),
+                                            onPressed: () {
+                                              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              //     builder: (BuildContext context) => const FeePayment()));
+                                            },
+                                            child: Text(
+                                              _contacts.q2paystatus,
+                                              style:
+                                              TextStyle( fontSize: 12),
+                                              textAlign: TextAlign.center,
+                                            )
+                                        ) : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: ColorConstant.lightgreen,
+                                            onPrimary: Colors.white,
+                                            elevation: 3,
+                                            alignment: Alignment.center,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(30.0)),
+                                            fixedSize: const Size(80, 30),
+                                            //////// HERE
+                                          ),
+                                          onPressed: () {
+                                            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                            //     builder: (BuildContext context) => const FeePayment()));
+                                          },
+                                          child: Text(
+                                            _contacts.q2paystatus,
+                                            style:
+                                            TextStyle( fontSize: 12),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            _contacts.q3paystatus == "Unpaid" ?
+                                            Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                            Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
+                                            const SizedBox(width: 10,),
+                                            const Text("Q3",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.q3.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                        const SizedBox(width: 20,),
+                                        _contacts.q3paystatus == "Unpaid" ? ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: ColorConstant.redbtn,
+                                              onPrimary: Colors.white,
+                                              elevation: 3,
+                                              alignment: Alignment.center,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30.0)),
+                                              fixedSize: const Size(80, 30),
+                                              //////// HERE
+                                            ),
+                                            onPressed: () {
+                                              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              //     builder: (BuildContext context) => const FeePayment()));
+                                            },
+                                            child: Text(
+                                              _contacts.q3paystatus,
+                                              style:
+                                              TextStyle( fontSize: 12),
+                                              textAlign: TextAlign.center,
+                                            )
+                                        ) : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: ColorConstant.lightgreen,
+                                            onPrimary: Colors.white,
+                                            elevation: 3,
+                                            alignment: Alignment.center,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(30.0)),
+                                            fixedSize: const Size(80, 30),
+                                            //////// HERE
+                                          ),
+                                          onPressed: () {
+                                            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                            //     builder: (BuildContext context) => const FeePayment()));
+                                          },
+                                          child: Text(
+                                            _contacts.q3paystatus,
+                                            style:
+                                            TextStyle( fontSize: 12),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            _contacts.q1paystatus == "Unpaid" ?
+                                            Image.asset("assets/images/greybtn.png",height: 20,width: 20,color: ColorConstant.grey,):
+                                            Image.asset("assets/images/greenbtn.png",height: 20,width: 20,color: ColorConstant.grey,),
+                                            const SizedBox(width: 10,),
+                                            const Text("Q4",style: TextStyle(color: ColorConstant.bluetext,fontSize: 14)),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20,),
+                                        Expanded(child: Text(_contacts.q4.toString(),style: TextStyle(color: ColorConstant.bluetext,fontSize: 14),textAlign: TextAlign.center,)),
+                                        const SizedBox(width: 20,),
+                                        _contacts.q4paystatus == "Unpaid" ? ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: ColorConstant.redbtn,
+                                              onPrimary: Colors.white,
+                                              elevation: 3,
+                                              alignment: Alignment.center,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30.0)),
+                                              fixedSize: const Size(80, 30),
+                                              //////// HERE
+                                            ),
+                                            onPressed: () {
+                                              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                              //     builder: (BuildContext context) => const FeePayment()));
+                                            },
+                                            child: Text(
+                                              _contacts.q4paystatus,
+                                              style:
+                                              TextStyle( fontSize: 12),
+                                              textAlign: TextAlign.center,
+                                            )
+                                        ) : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: ColorConstant.lightgreen,
+                                            onPrimary: Colors.white,
+                                            elevation: 3,
+                                            alignment: Alignment.center,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(30.0)),
+                                            fixedSize: const Size(80, 30),
+                                            //////// HERE
+                                          ),
+                                          onPressed: () {
+                                            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                            //     builder: (BuildContext context) => const FeePayment()));
+                                          },
+                                          child: Text(
+                                            _contacts.q4paystatus,
+                                            style:
+                                            TextStyle( fontSize: 12),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                  builder: (BuildContext context) => const FeePayment()));
-                            },
-                            child: const Text(
-                              "Pay Now",
-                              style:
-                              TextStyle( fontSize: 16),
-                              textAlign: TextAlign.center,
-                            ),
+                          ),
+                          const SizedBox(height: 40,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorConstant.darkgreen,
+                                  onPrimary: Colors.white,
+                                  elevation: 3,
+                                  alignment: Alignment.center,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0)),
+                                  fixedSize: const Size(178, 35),
+                                  //////// HERE
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                      builder: (BuildContext context) => const FeePayment()));
+                                },
+                                child: const Text(
+                                  "Pay Now",
+                                  style:
+                                  TextStyle( fontSize: 16),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      if(_contacts.name.isEmpty)
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height,
+                            color: Colors.white.withAlpha(10),
+                            child: Container(
+                                color: Colors.transparent,
+                                height: 100,width: 100,
+                                child: Center(child: CircularProgressIndicator())),
+                          ),
+                        ),
                     ],
                   )
               )
@@ -743,6 +822,7 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     setState(() {
       _contacts = detail;
       _isLoading = false;
+
     });
   }
 

@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/feepayment/feepayment.dart';
 
@@ -207,7 +208,13 @@ class PaymentHistoryState extends State<PaymentHistory> {
                                     fixedSize: const Size(214, 35),
                                     //////// HERE
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    final taskId = await FlutterDownloader.enqueue(
+  url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+  savedDir: 'the path of directory where you want to save downloaded files',
+  showNotification: true, // show download progress in status bar (for Android)
+  openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+);
                                     Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>

@@ -262,7 +262,7 @@ class LoginScreenState extends State<LoginScreen> implements LoginContract {
   @override
   void showLoginDetail(LoginDetails detail) {
     hideOpenDialog(navigatorKey.currentContext!);
-    showInSnackBar("Login Successfully");
+    //showInSnackBar("Login Successfully");
     setState((){
       AppPreferences().setAuthToken(detail.token);
       AppPreferences().setParentName(detail.parent_name);

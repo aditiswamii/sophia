@@ -41,7 +41,7 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   int select = 1;
   bool visible = true;
-
+  final ReceivePort _port = ReceivePort();
   FeePaymentState() {
     _presenter = FeePayPresenter(this);
   }
@@ -54,11 +54,25 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     // opendialog(navigatorKey.currentState!.context);
     _presenter.getfeesdetail();
     _presenter.gethistory();
-  }
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+      setState((){ });
+    });
 
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    // log("$id+$status+$progrss");
+    send.send([id, status, progress]);
+  }
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
 
@@ -68,50 +82,29 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     // Do some stuff.
     return true;
   }
-  ReceivePort _port = ReceivePort();
-  String? id ;
-  DownloadTaskStatus? status ;
-  int? progress ;
-  Future<void> download() async {
-    final Directory extDir = await getTemporaryDirectory();
-    final String dirPath = '${extDir.path}/sophia/receipt';
+
+  void download() async {
+    final Directory? extDir = await getExternalStorageDirectory();
+    final String dirPath = '${extDir!.path}/sophia/receipt';
     await Directory(dirPath).create(recursive: true);
-    _port.listen((dynamic data) {
 
-      setState((){
-        id = data[0];
-        status = data[1];
-        progress = data[2];
-      });
-
-    });
-    FlutterDownloader.registerCallback(downloadCallback);
-    //https://rajuvas.org/wp-content/uploads/gallery/KVK/success_story/KVK_Nohar_October_2021.pdf
     final taskId = await FlutterDownloader.enqueue(
       url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      saveInPublicStorage: true,
       savedDir: dirPath,
       showNotification: true, // show download progress in status bar (for Android)
       openFileFromNotification: true, // click on notification to open downloaded file (for Android)
     );
-    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
-
 
 
 
   }
-  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
-    final SendPort? send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    send!.send([id, status, progress]);
-  }
+
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
   @override
   Widget build(BuildContext context) {
-    // if(_contacts.name.isEmpty){
-    //   opendialog(context);
-    // }else if(_contacts.name.isNotEmpty){
-    //   hideOpenDialog(context);
-    // }
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: ColorConstant.bggrey,
@@ -420,9 +413,7 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
                                                 onPressed: ()  {
                                                   download();
                                                   // Navigator.of(context).pushReplacement(
-                                                  //     MaterialPageRoute(
-                                                  //         builder: (BuildContext context) =>
-                                                  //         const FeePayment()));
+                                                  //     MaterialPageRoute(builder: (context) => Webview()));
                                                 },
                                                 child:  const Text(
                                                   DownloadReceiptbtn,

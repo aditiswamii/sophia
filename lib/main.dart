@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sophia/colors/colors.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
@@ -23,6 +24,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await Firebase.initializeApp();
+  // await Permission.storage.request();
   gettoken();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

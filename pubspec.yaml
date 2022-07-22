@@ -44,6 +44,9 @@ dependencies:
   device_info_plus: ^3.2.3
   flutter_svg:
   path_provider:
+  permission_handler:
+  flutter_inappwebview:
+  webview_flutter:
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -34,4 +34,15 @@ class FeePayPresenter {
       _view.showError();
     });
   }
+  void payfee(String child_id,String transaction_id,String q2,String q1,String parent_id) {
+    assert(_view != null);
+
+    _repository
+        .payfeeapi(child_id, transaction_id, q2, q1, parent_id)
+        .then((contacts) => _view.success(contacts))
+        .catchError((onError) {
+      print(onError);
+      _view.showError();
+    });
+  }
 }

@@ -11,6 +11,7 @@ import 'package:sophia/colors/colors.dart';
 import 'package:sophia/main.dart';
 import 'package:sophia/model/feesdetail.dart';
 import 'package:sophia/model/history.dart';
+import 'package:sophia/model/success.dart';
 import 'package:sophia/ui/feepayment/feepaycontract.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
@@ -21,6 +22,7 @@ import '../../utils/constants.dart';
 import '../drawer/drawer.dart';
 import '../feedue/feedue.dart';
 import '../paymenthistory/paymenthistory.dart';
+import '../webview/webview.dart';
 import 'feepaypresenter.dart';
 
 class FeePayment extends StatefulWidget {
@@ -89,10 +91,11 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
     await Directory(dirPath).create(recursive: true);
 
     final taskId = await FlutterDownloader.enqueue(
-      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      saveInPublicStorage: true,
+     // url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      url: 'https://cache.careers360.mobi/media/schools/social-media/media-gallery/15099/2021/1/12/A%20Rally%20on%20Education.png',
+       saveInPublicStorage: true,
       savedDir: dirPath,
-      showNotification: true, // show download progress in status bar (for Android)
+      showNotification: false, // show download progress in status bar (for Android)
       openFileFromNotification: true, // click on notification to open downloaded file (for Android)
     );
 
@@ -823,5 +826,10 @@ class FeePaymentState extends State<FeePayment> implements FeePayContract{
       _history = items;
 
     });
+  }
+
+  @override
+  void success(Success succ) {
+    // TODO: implement success
   }
 }

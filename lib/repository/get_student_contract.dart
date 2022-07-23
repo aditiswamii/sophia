@@ -14,4 +14,5 @@ abstract class StudentRepository {
   Future<LoginDetails> loginapi(String mobile_number, String password);
   Future<Success> insettoken(String user_id,String token, String device_id,String device_name);
   Future<Success> logout(String user_id,String device_id);
+  Future<Success> payfeeapi(String child_id,String transaction_id,String q2,String q1,String parent_id);
 }

@@ -46,7 +46,7 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
   @override
   void initState() {
     super.initState();
-    BackButtonInterceptor.add(myInterceptor);
+   // BackButtonInterceptor.add(myInterceptor);
      loadapi();
 
      updatetoken();
@@ -72,18 +72,18 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
       _presenter.insertoken("1", token!, deviceId, Platform.isAndroid?"android":"ios");
     }
   }
-  @override
-  void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
-    super.dispose();
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) =>  LoginScreen()));
-    // Do some stuff.
-    return true;
-  }
+  // @override
+  // void dispose() {
+  //   BackButtonInterceptor.remove(myInterceptor);
+  //   super.dispose();
+  // }
+  //
+  // bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+  //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+  //       builder: (BuildContext context) =>  LoginScreen()));
+  //   // Do some stuff.
+  //   return true;
+  // }
    getDeviceId() async {
     if (Platform.isIOS) {
       var iosDeviceInfo = await DeviceInfoPlugin().iosInfo;

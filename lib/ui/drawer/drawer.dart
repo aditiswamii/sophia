@@ -13,6 +13,7 @@ import 'package:sophia/ui/drawer/drawercontract.dart';
 import 'package:sophia/ui/feepayment/feepayment.dart';
 import 'package:sophia/ui/home/home.dart';
 import 'package:sophia/ui/login/login.dart';
+import 'package:sophia/ui/privacy/privacy.dart';
 import 'package:sophia/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -100,10 +101,10 @@ class LeftDrawerState extends State<LeftDrawer> implements DrawerContract{
                      textAlign: TextAlign.start,
                    ),
                    onTap: () {
-                     // Navigator.pushReplacement(context,
-                     //     MaterialPageRoute(builder: (context) => Teaching()));
+                     Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+                         builder: (context) => FeePayment(), maintainState: false));
 
-                     Navigator.pop(context);
+                    // Navigator.pop(context);
                    },
                  ),
 
@@ -159,10 +160,10 @@ class LeftDrawerState extends State<LeftDrawer> implements DrawerContract{
                  textAlign: TextAlign.start,
                ),
                onTap: () {
-                 // Navigator.pushReplacement(context,
-                 //     MaterialPageRoute(builder: (context) => Teaching()));
+                 Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+                     builder: (context) => PrivacyPolicy(url: 'https://www.google.co.in/'), maintainState: false));
 
-                 Navigator.pop(context);
+                 // Navigator.pop(context);
                },
              ),
              ListTile(
@@ -181,7 +182,7 @@ class LeftDrawerState extends State<LeftDrawer> implements DrawerContract{
                ),
                onTap: () async {
                  final String? deviceid = await AppPreferences().getDeviceid();
-                 opendialog(context);
+                 opendialog(context,"Please wait …");
                 _presenter.logout("1", deviceid!);
                  AppPreferences().setLogin(false);
                  // Navigator.pop(context);
@@ -227,7 +228,7 @@ class LeftDrawerState extends State<LeftDrawer> implements DrawerContract{
 
   @override
   void success(Success succ) {
-    hideOpenDialog(context);
+    hideOpenDialog(context,"Please wait …");
    AppPreferences().clear();
    Navigator.of(navigatorKey.currentState!.context).pushReplacement(MaterialPageRoute(
        builder: (BuildContext context) => LoginScreen()));

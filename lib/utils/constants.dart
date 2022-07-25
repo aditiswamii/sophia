@@ -8,10 +8,10 @@ void showInSnackBar(String value) {
       .showSnackBar(SnackBar(content: Text(value,textAlign: TextAlign.center,)));
 }
 
-void opendialog(BuildContext context) async {
-  DialogBuilder(context).showLoaderDialog(context);
+void opendialog(BuildContext context,String message) async {
+  DialogBuilder(context).showLoaderDialog(context,message);
 }
 
-void hideOpenDialog(BuildContext context) async {
+void hideOpenDialog(BuildContext context,String message) async {
   DialogBuilder(context).hideOpenDialog();
 }

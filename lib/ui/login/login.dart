@@ -192,7 +192,7 @@ class LoginScreenState extends State<LoginScreen> implements LoginContract {
                            if(passcontroller.text.isNotEmpty){
                              if(validateMobile(mobilecontroller.text.toString())) {
                                if(validatePass(passcontroller.text.toString())) {
-                                 opendialog(context);
+                                 opendialog(context,"Please wait …");
                                  _presenter.getlogindetail(
                                      mobilecontroller.text.toString(),
                                      passcontroller.text.toString());
@@ -261,7 +261,7 @@ class LoginScreenState extends State<LoginScreen> implements LoginContract {
 
   @override
   void showLoginDetail(LoginDetails detail) {
-    hideOpenDialog(navigatorKey.currentContext!);
+    hideOpenDialog(navigatorKey.currentContext!,"Please wait …");
     //showInSnackBar("Login Successfully");
     setState((){
       AppPreferences().setAuthToken(detail.token);

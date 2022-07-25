@@ -15,3 +15,5 @@ const String DownloadReceiptbtn = 'Download Receipt';
 const String Notificationsheading = 'Notifications';
 const String MarkAllReadbtn = 'Mark All Read';
 const String Number = '98765867453';
+const String Privacyhead = 'Privacy Policy';
+const String Receipthead = 'Receipt';

@@ -58,7 +58,7 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
      });
        final int? parentid = await  AppPreferences().getuserId();
        log(parentid.toString());
-       opendialog(navigatorKey.currentContext!);
+       opendialog(navigatorKey.currentContext!,"Please wait …");
       _presenter.loadContacts(parentid.toString());
      }
 
@@ -69,6 +69,7 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
     AppPreferences().setDeviceid(deviceId!);
     final bool? registered = await AppPreferences().getIsRegistered();
     if(registered==false) {
+      log("inserttoken api");
       _presenter.insertoken("1", token!, deviceId, Platform.isAndroid?"android":"ios");
     }
   }
@@ -162,7 +163,7 @@ class HomeScreenState extends State<HomeScreen> implements HomeContract {
                              physics: const BouncingScrollPhysics(),
                              itemCount: _contacts.length,
                              itemBuilder: (context, index) {
-                               hideOpenDialog(_scaffoldKey.currentContext!);
+                               hideOpenDialog(_scaffoldKey.currentContext!,"Please wait …");
                            return Container(
                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                              child: Card(
